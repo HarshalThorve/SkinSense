@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}SkinSense | Dermatologist Recommended Products{% endblock %}
+
+{% block styles %}
+<style>
+    .derm-quote {
+        border-left: 3px solid #e879a0;
+        padding: 10px 14px;
+        margin: 12px 0;
+        font-style: italic;
+        font-size: 0.85rem;
+        opacity: 0.85;
+        border-radius: 0 8px 8px 0;
+        background: rgba(232, 121, 160, 0.08);
+    }
+
+    .derm-recommended-by {
+        font-size: 0.8rem;
+        color: #e879a0;
+        margin: 6px 0 10px 0;
+        font-weight: 500;
+    }
+
+    .key-ingredient {
+        font-size: 0.8rem;
+        background: rgba(139, 92, 246, 0.1);
+        border: 1px solid rgba(139, 92, 246, 0.2);
+        border-radius: 8px;
+        padding: 6px 10px;
+        margin: 8px 0;
+        color: #a78bfa;
+    }
+
+    .derm-rating {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #fbbf24;
+        margin: 8px 0;
+    }
+
+    .filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+        justify-content: center;
+    }
+
+    .filter-row-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-sub);
+        width: 100%;
+        text-align: center;
+        margin-bottom: 4px;
+    }
+
+    .trust-section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 30px;
+        margin: 40px auto;
+        max-width: 800px;
+        text-align: center;
+        box-shadow: 0 10px 30px var(--shadow);
+    }
+
+    .trust-section h3 {
+        margin-bottom: 20px;
+        color: var(--text);
+    }
+
+    .trust-points {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        text-align: left;
+        max-width: 400px;
+        margin: 0 auto 20px auto;
+    }
+
+    .trust-points div {
+        font-size: 0.95rem;
+        color: var(--text-sub);
+    }
+
+    .disclaimer {
+        font-size: 0.8rem;
+        color: var(--text-sub);
+        opacity: 0.7;
+    }
+
+    .trust-badge {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+        font-size: 0.85rem;
+        color: var(--text-sub);
+        font-weight: 500;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="nr-page">
+
+    <div class="nr-header">
+        <h1>Dermatologist Recommended Products 👩‍⚕️</h1>
+        <p>Handpicked by certified dermatologists for each skin type and concern</p>
+        <div class="trust-badge">
+            <span>✓ Science-backed</span>
+            <span>✓ Clinically tested</span>
+            <span>✓ Dermatologist approved</span>
+            <span>✓ No sponsored content</span>
+        </div>
+    </div>
+
+
+
+    <div class="nr-grid" id="remediesGrid">
+        {% for p in products %}
+        <div class="nr-card product-card" data-id="{{ loop.index }}" data-name="{{ p.name | lower }}"
+            data-skintype="{{ p.skin_type | lower }}" data-category="{{ p.category | lower }}"
+            data-concern="{{ p.concern | lower }}">
+            <div class="nr-card-top card-header" style="align-items: flex-start; gap: 8px;">
+                <h3 class="nr-card-name product-name" style="font-size: 1.1rem; line-height: 1.3;"><span
+                        class="nr-icon product-icon">{{ p.icon }}</span>{{ p.name }}</h3>
+                <button class="nr-fav-btn heart-icon" id="heart-{{ loop.index }}"
+                    onclick="toggleFavourite('{{ loop.index }}')" aria-label="Save to favorites"
+                    style="flex-shrink: 0;">♡</button>
+            </div>
+
+            <p class="derm-recommended-by">
+                👩‍⚕️ Recommended by {{ p.derm_name }}
+            </p>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <span class="nr-skin-tag skin-type-tag">{{ p.skin_type }}</span>
+                <span class="nr-rating price-tag"
+                    style="background:var(--bg); padding:4px 8px; border-radius:100px; font-weight:600;">{{ p.price
+                    }}</span>
+            </div>
+
+            <div class="key-ingredient">
+                🧪 Key: {{ p.key_ingredient }}
+            </div>
+
+            <blockquote class="derm-quote">
+                "{{ p.derm_quote }}"
+            </blockquote>
+
+            <div class="derm-rating">
+                ⭐ {{ p.derm_rating }} Dermatologist Rating
+            </div>
+
+            <a href="{{ p.link }}" target="_blank" rel="noopener noreferrer"
+                style="display:block; width:100%; text-align:center; padding:10px; background:var(--surface); border:1px solid var(--border); border-radius:12px; color:var(--text); font-weight:600; text-decoration:none; transition:all 0.2s; margin-top: 12px;"
+                onmouseover="this.style.background='var(--rose)'; this.style.color='white'; this.style.borderColor='var(--rose)';"
+                onmouseout="this.style.background='var(--surface)'; this.style.color='var(--text)'; this.style.borderColor='var(--border)';">
+                View on Amazon 🛒
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="trust-section">
+        <h3>Why trust our recommendations?</h3>
+        <div class="trust-points">
+            <div>✅ All products recommended by verified Indian dermatologists</div>
+            <div>✅ No paid promotions or sponsored listings</div>
+            <div>✅ Based on clinical evidence and patient outcomes</div>
+            <div>✅ Updated regularly by our medical team</div>
+        </div>
+        <p class="disclaimer">
+            * These recommendations are general guidelines. Always patch test new products and consult your
+            dermatologist for personalized advice.
+        </p>
+    </div>
+
+    <a href="{{ url_for('dashboard') }}" class="nr-back">⬅ Back to Dashboard</a>
+
+</div>
+
+<script>
+    function toggleFavourite(productId) {
+        let favs = JSON.parse(localStorage.getItem("skinsense_favs") || "[]");
+        productId = String(productId);
+
+        if (favs.includes(productId)) {
+            favs = favs.filter(id => id !== productId);
+            const heart = document.getElementById(`heart-${productId}`);
+            if (heart) heart.textContent = "♡";
+        } else {
+            favs.push(productId);
+            const heart = document.getElementById(`heart-${productId}`);
+            if (heart) heart.textContent = "❤️";
+        }
+
+        localStorage.setItem("skinsense_favs", JSON.stringify(favs));
+
+        // Re-filter in case we are on the favourites tab
+        if (typeof window.filterProducts === "function") {
+            window.filterProducts();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // On page load, restore saved favourites
+        const favs = JSON.parse(localStorage.getItem("skinsense_favs") || "[]");
+        favs.forEach(id => {
+            const heart = document.getElementById(`heart-${id}`);
+            if (heart) heart.textContent = "❤️";
+        });
+
+    });
+</script>
+{% endblock %}

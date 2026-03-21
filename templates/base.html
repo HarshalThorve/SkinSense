@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SkinSense{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    {% block styles %}{% endblock %}
+</head>
+
+<body>
+    <div class="app-container">
+
+        <!-- NAV -->
+        <style>
+            /* Mobile Hamburger Nav */
+            .hamburger {
+                display: none;
+                flex-direction: column;
+                gap: 5px;
+                cursor: pointer;
+                padding: 5px;
+                background: none;
+                border: none;
+            }
+
+            .hamburger span {
+                display: block;
+                width: 22px;
+                height: 2px;
+                background: var(--text);
+                border-radius: 2px;
+                transition: all 0.3s ease;
+            }
+
+            .hamburger.open span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .hamburger.open span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.open span:nth-child(3) {
+                transform: rotate(-45deg) translate(5px, -5px);
+            }
+
+            .mobile-nav-drawer {
+                display: none;
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: var(--bg);
+                border-bottom: 1px solid var(--border);
+                padding: 16px;
+                z-index: 9998;
+                flex-direction: column;
+                gap: 4px;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            }
+
+            .mobile-nav-drawer.open {
+                display: flex;
+            }
+
+            .mobile-nav-drawer a {
+                display: block;
+                padding: 12px 16px;
+                border-radius: 8px;
+                color: var(--text);
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 15px;
+                transition: background 0.2s;
+            }
+
+            .mobile-nav-drawer a:hover,
+            .mobile-nav-drawer a.active {
+                background: rgba(168, 85, 247, 0.1);
+                color: #a855f7;
+            }
+
+            @media (max-width: 700px) {
+                .nav-links {
+                    display: none !important;
+                }
+
+                .hamburger {
+                    display: flex;
+                }
+            }
+        </style>
+        <nav class="navbar">
+            <div class="logo-section">
+                <a href="{{ url_for('dashboard') }}">
+                    <div class="logo-icon">✦</div>
+                    <span class="brand-logo">SkinSense</span>
+                </a>
+            </div>
+
+            <ul class="nav-links" style="list-style:none;display:flex;align-items:center;gap:32px;">
+                <li><a href="{{ url_for('dashboard') }}"
+                        class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">Home</a></li>
+                {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('skin_analysis') }}"
+                        class="nav-link {% if request.endpoint == 'skin_analysis' %}active{% endif %}">Analysis</a></li>
+                <li><a href="{{ url_for('products') }}"
+                        class="nav-link {% if request.endpoint == 'products' %}active{% endif %}">Expert Picks</a></li>
+                <li><a href="{{ url_for('history') }}"
+                        class="nav-link {% if request.endpoint == 'history' %}active{% endif %}">History</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('dermatologists') }}"
+                        class="nav-link {% if request.endpoint == 'dermatologists' %}active{% endif %}">Contact</a></li>
+            </ul>
+
+            <div class="nav-right">
+                {% if current_user.is_authenticated %}
+                <label class="theme-toggle-wrap" title="Toggle dark mode">
+                    <input type="checkbox" id="themeSwitch">
+                    <div class="toggle-track"><span>☀️</span><span>🌙</span></div>
+                    <div class="toggle-knob" id="toggleKnob"><span id="toggleIcon">☀️</span></div>
+                </label>
+                <div class="avatar-circle">{{ current_user.name[0] | upper }}</div>
+                <a href="{{ url_for('logout') }}" class="logout-link" title="Logout">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                </a>
+                {% else %}
+                <label class="theme-toggle-wrap" title="Toggle dark mode">
+                    <input type="checkbox" id="themeSwitch">
+                    <div class="toggle-track"><span>☀️</span><span>🌙</span></div>
+                    <div class="toggle-knob" id="toggleKnob"><span id="toggleIcon">☀️</span></div>
+                </label>
+                <a href="{{ url_for('login') }}" class="btn-login">Login</a>
+                {% endif %}
+                <!-- Hamburger (mobile only) -->
+                <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Nav Drawer -->
+        <div class="mobile-nav-drawer" id="mobileNavDrawer">
+            <a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}">🏠
+                Home</a>
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('skin_analysis') }}"
+                class="{% if request.endpoint == 'skin_analysis' %}active{% endif %}">🔬 Analysis</a>
+            <a href="{{ url_for('products') }}" class="{% if request.endpoint == 'products' %}active{% endif %}">⭐
+                Expert Picks</a>
+            <a href="{{ url_for('history') }}" class="{% if request.endpoint == 'history' %}active{% endif %}">📋
+                History</a>
+            {% endif %}
+            <a href="{{ url_for('dermatologists') }}"
+                class="{% if request.endpoint == 'dermatologists' %}active{% endif %}">📞 Contact</a>
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('logout') }}" style="color: #ef4444;">🚪 Logout</a>
+            {% else %}
+            <a href="{{ url_for('login') }}" style="color:#a855f7;">🔑 Login</a>
+            {% endif %}
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div>
+                <a href="{{ url_for('dashboard') }}" class="footer-logo">
+                    <div class="logo-icon">✦</div>
+                    <span class="brand-logo">SkinSense</span>
+                </a>
+                <p class="footer-desc">Your AI-powered skincare companion — science-backed, personalized, and always in
+                    your corner.</p>
+            </div>
+            <div>
+                <div class="footer-col-title">Quick Links</div>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('dashboard') }}">Home</a></li>
+                    <li><a href="{{ url_for('skin_analysis') }}">Analysis</a></li>
+                    <li><a href="{{ url_for('ingredient_scan') }}">Ingredient Scanner</a></li>
+                    <li><a href="{{ url_for('trend_verification') }}">Trend Verification</a></li>
+                    <li><a href="{{ url_for('products') }}">Expert Picks</a></li>
+                </ul>
+            </div>
+            <div>
+                <div class="footer-col-title">Contact</div>
+                <ul class="footer-links">
+                    <li><a href="#">support@skinsense.ai</a></li>
+                    <li><a href="{{ url_for('dermatologists') }}">Dermatologists</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+        </footer>
+        <div class="footer-bottom">
+            <span>© 2026 SkinSense. Made with 💗 for your skin.</span>
+            <span>Built by <span class="mauve-text">Harshal</span></span>
+        </div>
+
+    </div><!-- /.app-container -->
+
+    <script>
+        // ── Theme Toggle ──
+        const themeSwitch = document.getElementById('themeSwitch');
+        const toggleIcon = document.getElementById('toggleIcon');
+        const html = document.documentElement;
+
+        const saved = localStorage.getItem('skinsense-theme') || 'light';
+        html.setAttribute('data-theme', saved);
+        if (saved === 'dark') {
+            themeSwitch.checked = true;
+            if (toggleIcon) toggleIcon.textContent = '🌙';
+        }
+
+        themeSwitch?.addEventListener('change', () => {
+            const isDark = themeSwitch.checked;
+            html.setAttribute('data-theme', isDark ? 'dark' : 'light');
+            localStorage.setItem('skinsense-theme', isDark ? 'dark' : 'light');
+            if (toggleIcon) toggleIcon.textContent = isDark ? '🌙' : '☀️';
+        });
+
+        // ── Scroll Reveal ──
+        document.addEventListener('DOMContentLoaded', () => {
+            const targets = document.querySelectorAll('.nr-card,.dash-card,.derm-card,.social-card,.hist-container');
+            targets.forEach((el, i) => {
+                el.classList.add('sr');
+                el.style.transitionDelay = `${(i % 6) * 60}ms`;
+            });
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+            }, { threshold: 0.12 });
+            targets.forEach(el => observer.observe(el));
+        });
+    </script>
+    <script>
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mobileNavDrawer = document.getElementById('mobileNavDrawer');
+        if (hamburgerBtn) {
+            hamburgerBtn.addEventListener('click', () => {
+                hamburgerBtn.classList.toggle('open');
+                mobileNavDrawer.classList.toggle('open');
+            });
+            // Close on link click
+            mobileNavDrawer.querySelectorAll('a').forEach(a => {
+                a.addEventListener('click', () => {
+                    hamburgerBtn.classList.remove('open');
+                    mobileNavDrawer.classList.remove('open');
+                });
+            });
+        }
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

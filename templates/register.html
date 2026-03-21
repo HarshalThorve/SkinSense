@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block body_class %}auth-page{% endblock %}
+
+{% block title %}SkinSense | Register{% endblock %}
+
+{% block content %}
+<div
+    style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:80vh; padding:40px 20px;">
+
+    <div class="auth-card">
+        <div style="display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:24px;">
+            <div class="logo-icon" style="font-size:18px;">✦</div>
+            <span
+                style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);font-weight:700;">SkinSense</span>
+        </div>
+
+        <h2>Create Account ✨</h2>
+        <p>Start your personalized skincare journey</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash {{ category if category != 'message' else '' }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <input type="text" name="name" placeholder="Full Name" required>
+            <input type="email" name="email" placeholder="Email address" required>
+            <input type="tel" name="phone" placeholder="Phone Number" required>
+            <div style="position:relative;width:100%;">
+                <input type="password" name="password" id="password" placeholder="Password" required
+                    style="width:100%;padding-right:44px;">
+                <span onclick="togglePassword()"
+                    style="position:absolute;right:15px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:18px;user-select:none;margin-top:-7px;">
+                    👁️
+                </span>
+            </div>
+            <button type="submit" style="margin-top:6px;">Create Account</button>
+        </form>
+
+        <div style="margin-top:18px; color:var(--text-mid); font-size:0.88rem;">
+            Already have an account? <a href="{{ url_for('login') }}">Login</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function togglePassword() {
+        var x = document.getElementById("password");
+        x.type = (x.type === "password") ? "text" : "password";
+    }
+</script>
+{% endblock %}

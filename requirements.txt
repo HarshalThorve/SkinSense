@@ -1,0 +1,11 @@
+flask
+flask-login
+flask-sqlalchemy
+werkzeug
+joblib
+numpy
+pytesseract
+Pillow
+reportlab
+scikit-learn
+python-dotenv

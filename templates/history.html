@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}SkinSense | History{% endblock %}
+
+{% block content %}
+<div class="hist-page">
+    <div class="hist-container">
+
+        <h2 class="hist-title">Your Activity History 🕒</h2>
+
+        <!-- Tabs -->
+        <div class="hist-tabs">
+            <button class="hist-tab-btn active" onclick="openTab(event, 'skin-reports')">Skin Reports</button>
+            <button class="hist-tab-btn" onclick="openTab(event, 'trend-verification')">Trend Verification</button>
+            <button class="hist-tab-btn" onclick="openTab(event, 'ingredient-scans')">Ingredient Scans</button>
+        </div>
+
+        <!-- Skin Reports Tab -->
+        <div id="skin-reports" class="hist-tab-content active">
+            {% if skin_reports %}
+            <table class="hist-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Concern</th>
+                        <th>Result</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in skin_reports %}
+                    <tr>
+                        <td>{{ (report.timestamp|ist).strftime('%b %d, %Y %I:%M %p') if report.timestamp else 'N/A' }}
+                        </td>
+                        <td>{{ report.skin_type }}</td>
+                        <td>{{ report.concern }}</td>
+                        <td><span class="hist-badge hist-badge--info">{{ report.result }}</span></td>
+                        <td><a href="{{ url_for('download_report') }}" class="hist-dl-link">Download PDF ⬇</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="hist-empty">
+                <p>No skin reports yet.</p>
+                <a href="{{ url_for('skin_analysis') }}">Analyze Now →</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Trend Verification Tab -->
+        <div id="trend-verification" class="hist-tab-content">
+            {% if trend_history %}
+            <table class="hist-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Trend Queried</th>
+                        <th>Result</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in trend_history %}
+                    <tr>
+                        <td>{{ (item.timestamp|ist).strftime('%b %d, %Y %I:%M %p') if item.timestamp else 'N/A' }}</td>
+                        <td>{{ item.trend }}</td>
+                        <td>{{ item.result }}</td>
+                        <td><span class="hist-badge hist-badge--{{ item.status }}">{{ item.status | upper }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="hist-empty">
+                <p>No trend verifications yet.</p>
+                <a href="{{ url_for('trend_verification') }}">Check a Trend →</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Ingredient Scans Tab -->
+        <div id="ingredient-scans" class="hist-tab-content">
+            {% if scan_history %}
+            <table class="hist-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Image</th>
+                        <th>Result Summary</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for scan in scan_history %}
+                    <tr>
+                        <td>{{ (scan.timestamp|ist).strftime('%b %d, %Y %I:%M %p') if scan.timestamp else 'N/A' }}</td>
+                        <td>
+                            <a href="{{ url_for('static', filename='uploads/' + scan.image_path) }}" target="_blank">
+                                <img src="{{ url_for('static', filename='uploads/' + scan.image_path) }}"
+                                    style="width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid var(--border);">
+                            </a>
+                        </td>
+                        <td>{{ scan.result_summary }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="hist-empty">
+                <p>No ingredient scans yet.</p>
+                <a href="{{ url_for('ingredient_scan') }}">Scan a Product →</a>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function openTab(evt, tabName) {
+        document.querySelectorAll('.hist-tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.hist-tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabName).classList.add('active');
+        evt.currentTarget.classList.add('active');
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}SkinSense | Trend Verification{% endblock %}
+
+{% block content %}
+<div class="tv-page">
+    <div class="tv-card">
+
+        <h2>Trend Verification 🔍</h2>
+        <p>Check if a skincare trend is safe or harmful</p>
+
+        <form method="POST">
+
+            <!-- Skincare Trend -->
+            <div class="tv-field">
+                <label class="tv-label" for="trend">Enter Skincare Trend</label>
+                <textarea id="trend" name="trend" class="tv-input" rows="3" required
+                    placeholder="e.g. Lime and baking soda for glowing skin"></textarea>
+            </div>
+
+            <!-- Skin Type Card Picker -->
+            <div class="tv-field">
+                <label class="tv-label">What's your skin type?</label>
+                <div class="st-grid">
+                    <div class="st-card" onclick="selectSkinType(this,'Oily')">
+                        <span class="st-card-icon">💧</span>
+                        <div class="st-card-info"><strong>Oily</strong><span>Shiny, enlarged pores, prone to
+                                breakouts</span></div>
+                    </div>
+                    <div class="st-card" onclick="selectSkinType(this,'Dry')">
+                        <span class="st-card-icon">🌿</span>
+                        <div class="st-card-info"><strong>Dry</strong><span>Tight, flaky, rough texture</span></div>
+                    </div>
+                    <div class="st-card" onclick="selectSkinType(this,'Combination')">
+                        <span class="st-card-icon">✳️</span>
+                        <div class="st-card-info"><strong>Combination</strong><span>Oily T-zone, dry cheeks</span></div>
+                    </div>
+                    <div class="st-card" onclick="selectSkinType(this,'Normal')">
+                        <span class="st-card-icon">✨</span>
+                        <div class="st-card-info"><strong>Normal</strong><span>Balanced, few imperfections</span></div>
+                    </div>
+                    <div class="st-card" onclick="selectSkinType(this,'Sensitive')" style="grid-column:1/-1;">
+                        <span class="st-card-icon">🌸</span>
+                        <div class="st-card-info"><strong>Sensitive</strong><span>Easily irritated, redness-prone</span>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="skin_type" id="skin_type_input" required>
+            </div>
+
+            <button type="submit" class="tv-submit">Verify Trend</button>
+        </form>
+
+        <!-- RESULT -->
+        {% if result %}
+        {% set bg_color = 'rgba(16,185,129,0.08)' if status == 'success' else 'rgba(239,68,68,0.08)' if status ==
+        'danger' else 'rgba(245,158,11,0.08)' %}
+        {% set border_color = '#10b981' if status == 'success' else '#ef4444' if status == 'danger' else '#f59e0b' %}
+        {% set text_color = '#15803d' if status == 'success' else '#b91c1c' if status == 'danger' else '#b45309' %}
+        <div class="tv-result" style="background:{{ bg_color }};border-left-color:{{ border_color }};">
+            <h3 style="color:{{ text_color }};">{{ result }}</h3>
+            <p style="color:{{ text_color }};">{{ explanation }}</p>
+        </div>
+        {% endif %}
+
+        <a href="{{ url_for('dashboard') }}" class="tv-back">⬅ Back to Dashboard</a>
+
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    function selectSkinType(el, type) {
+        document.querySelectorAll('.st-card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('skin_type_input').value = type;
+    }
+</script>
+{% endblock %}
+
+{% endblock %}

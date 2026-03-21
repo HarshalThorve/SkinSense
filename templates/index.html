@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}SkinSense | AI Skincare Studio{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section
+  style="min-height:calc(100vh - 64px);display:grid;grid-template-columns:1fr 1fr;align-items:center;overflow:hidden;position:relative;padding:0;">
+
+  <!-- Radial blush blob -->
+  <div
+    style="position:absolute;top:-200px;right:-200px;width:720px;height:720px;background:radial-gradient(circle,rgba(240,165,176,0.22) 0%,transparent 68%);pointer-events:none;">
+  </div>
+  <div
+    style="position:absolute;bottom:-80px;left:0;width:440px;height:440px;background:radial-gradient(circle,rgba(158,184,158,0.15) 0%,transparent 68%);pointer-events:none;">
+  </div>
+
+  <!-- Left: Text -->
+  <div style="padding:80px 48px 80px 80px;position:relative;z-index:2;">
+    <div
+      style="display:inline-flex;align-items:center;gap:6px;background:var(--pill-bg);border:1px solid rgba(201,136,158,0.25);color:var(--pill-c);padding:6px 16px;border-radius:100px;font-size:0.76rem;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:28px;">
+      ✦ AI-Powered Skincare
+    </div>
+
+    <h1
+      style="font-family:'Playfair Display',serif;font-size:clamp(2.6rem,4.5vw,4.2rem);line-height:1.06;color:var(--text);margin-bottom:22px;">
+      Your skin deserves<br>
+      <em style="font-style:italic;color:var(--mauve);">science-backed</em> care.
+    </h1>
+
+    <p
+      style="font-size:1rem;color:var(--text-mid);line-height:1.75;max-width:400px;margin-bottom:40px;font-weight:300;">
+      SkinSense uses advanced ML and dermatological insights to analyze skin conditions, scan ingredients, and verify
+      trends — personalized just for you.
+    </p>
+
+    <div style="display:flex;gap:14px;align-items:center;">
+      <a href="{{ url_for('register') }}" class="btn-primary" style="text-decoration:none;display:inline-block;">
+        Get Started →
+      </a>
+      <a href="{{ url_for('login') }}" class="btn-ghost" style="text-decoration:none;">
+        Already have an account?
+      </a>
+    </div>
+
+    <!-- Stats -->
+    <div style="display:flex;gap:36px;margin-top:52px;">
+      <div>
+        <div
+          style="font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--text);line-height:1;">
+          10K+</div>
+        <div style="font-size:0.75rem;color:var(--text-sub);font-weight:400;letter-spacing:0.03em;margin-top:4px;">Users
+        </div>
+      </div>
+      <div>
+        <div
+          style="font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--text);line-height:1;">
+          500+</div>
+        <div style="font-size:0.75rem;color:var(--text-sub);font-weight:400;letter-spacing:0.03em;margin-top:4px;">
+          Ingredients Tracked</div>
+      </div>
+      <div>
+        <div
+          style="font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--text);line-height:1;">
+          98%</div>
+        <div style="font-size:0.75rem;color:var(--text-sub);font-weight:400;letter-spacing:0.03em;margin-top:4px;">
+          Accuracy</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Images -->
+  <div
+    style="padding:40px 40px 40px 0;display:flex;align-items:center;justify-content:center;min-height:500px;position:relative;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:480px;">
+      <img src="{{ url_for('static', filename='images/ing_scan.jpg') }}" alt="Ingredient Scan"
+        style="grid-column:1/-1;width:100%;height:260px;object-fit:cover;border-radius:20px;box-shadow:0 12px 36px var(--shadow-lg);animation:floatA 6s ease-in-out infinite;">
+      <img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=300&h=300&fit=crop" alt="Skincare"
+        style="width:100%;height:170px;object-fit:cover;border-radius:16px;box-shadow:0 8px 24px var(--shadow);animation:floatB 7s ease-in-out infinite;">
+      <img src="{{ url_for('static', filename='images/img1.jpg') }}" alt="Natural Skincare"
+        style="width:100%;height:170px;object-fit:cover;border-radius:16px;box-shadow:0 8px 24px var(--shadow);animation:floatC 5s ease-in-out infinite;">
+    </div>
+  </div>
+
+</section>
+
+<!-- FEATURES STRIP -->
+<div
+  style="background:var(--surface2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:0 80px;display:flex;overflow-x:auto;transition:background 0.35s;">
+  <div
+    style="display:flex;align-items:center;gap:8px;padding:15px 28px;font-size:0.82rem;color:var(--text-mid);border-right:1px solid var(--border);white-space:nowrap;">
+    🧬 AI Skin Analysis</div>
+  <div
+    style="display:flex;align-items:center;gap:8px;padding:15px 28px;font-size:0.82rem;color:var(--text-mid);border-right:1px solid var(--border);white-space:nowrap;">
+    📸 Ingredient Scanner</div>
+  <div
+    style="display:flex;align-items:center;gap:8px;padding:15px 28px;font-size:0.82rem;color:var(--text-mid);border-right:1px solid var(--border);white-space:nowrap;">
+    🔥 Trend Verification</div>
+  <div
+    style="display:flex;align-items:center;gap:8px;padding:15px 28px;font-size:0.82rem;color:var(--text-mid);border-right:1px solid var(--border);white-space:nowrap;">
+    🌿 Natural Remedies</div>
+  <div
+    style="display:flex;align-items:center;gap:8px;padding:15px 28px;font-size:0.82rem;color:var(--text-mid);white-space:nowrap;">
+    👩‍⚕️ Dermatologist Connect</div>
+</div>
+
+<!-- ABOUT / FEATURES SECTION -->
+<section style="padding:100px 80px;background:var(--bg);transition:background 0.35s;">
+  <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;">
+
+    <!-- Left: About text -->
+    <div>
+      <div class="section-label" style="text-align:left;">Why SkinSense</div>
+      <h2
+        style="font-family:'Playfair Display',serif;font-size:clamp(1.9rem,2.8vw,2.6rem);color:var(--text);line-height:1.15;margin-bottom:18px;">
+        Smart skincare,<br><em style="font-style:italic;color:var(--mauve);">built for you.</em>
+      </h2>
+      <p style="font-size:0.95rem;color:var(--text-mid);line-height:1.8;font-weight:300;margin-bottom:16px;">
+        SkinSense helps identify your skin type, detect common skin concerns, and recommend personalised routines —
+        bridging the gap between you and professional dermatological care.
+      </p>
+      <p style="font-size:0.92rem;color:var(--text-mid);line-height:1.8;font-weight:300;margin-bottom:32px;">
+        Our algorithms are trained on thousands of skin images to provide accurate, reliable, and actionable insights
+        for your unique skincare journey.
+      </p>
+      <a href="{{ url_for('register') }}" class="btn-primary" style="text-decoration:none;display:inline-block;">
+        Create Free Account
+      </a>
+    </div>
+
+    <!-- Right: Feature points -->
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      {% for feature in [
+      ('🧬', 'AI-based skin condition detection', 'Upload a photo for instant, ML-powered skin analysis.'),
+      ('📸', 'Ingredient safety scanner', 'Check if a product label is safe for your skin type.'),
+      ('👩‍⚕️', 'Dermatologist-inspired', 'Advice reviewed and curated by certified skin experts.'),
+      ('⚡', 'Real-time analysis', 'Results in seconds, not days. No waiting room needed.'),
+      ('🔒', 'Privacy-first platform', 'Your data is encrypted and never sold to third parties.')
+      ] %}
+      <div
+        style="display:flex;align-items:flex-start;gap:16px;padding:18px 20px;background:var(--surface);border-radius:14px;border:1px solid var(--border);transition:transform 0.2s,box-shadow 0.2s;"
+        onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px var(--shadow-lg)'"
+        onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <div
+          style="width:40px;height:40px;background:var(--pill-bg);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">
+          {{ feature[0] }}</div>
+        <div>
+          <div style="font-size:0.9rem;font-weight:700;color:var(--text);margin-bottom:3px;">{{ feature[1] }}</div>
+          <div style="font-size:0.82rem;color:var(--text-mid);line-height:1.5;">{{ feature[2] }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA SECTION -->
+<section style="background:#1a1018;padding:100px 80px;text-align:center;position:relative;overflow:hidden;">
+  <div
+    style="position:absolute;top:-150px;left:50%;transform:translateX(-50%);width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(201,136,158,0.18) 0%,transparent 65%);pointer-events:none;">
+  </div>
+  <div style="position:relative;z-index:2;max-width:560px;margin:0 auto;">
+    <div
+      style="font-size:0.74rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--mauve);font-weight:600;margin-bottom:16px;">
+      Get Started</div>
+    <h2
+      style="font-family:'Playfair Display',serif;font-size:clamp(2rem,3.5vw,3rem);color:#f5e8ed;line-height:1.15;margin-bottom:18px;">
+      Ready to know<br><em style="font-style:italic;color:var(--rose);">your skin better?</em>
+    </h2>
+    <p style="font-size:0.95rem;color:rgba(245,232,237,0.5);line-height:1.7;margin-bottom:36px;font-weight:300;">
+      Join thousands of users taking control of their skin health with AI-powered tools, expert guidance, and
+      science-backed recommendations.
+    </p>
+    <div style="display:flex;gap:14px;justify-content:center;align-items:center;">
+      <a href="{{ url_for('register') }}"
+        style="background:linear-gradient(135deg,var(--rose),var(--mauve));color:#fff;border:none;padding:14px 32px;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer;text-decoration:none;transition:all 0.22s;box-shadow:0 6px 20px rgba(201,136,158,0.35);">
+        Create Free Account
+      </a>
+      <a href="{{ url_for('login') }}"
+        style="color:rgba(245,232,237,0.5);font-size:0.88rem;text-decoration:none;transition:color 0.2s;"
+        onmouseover="this.style.color='#f0a5b0'" onmouseout="this.style.color='rgba(245,232,237,0.5)'">
+        Already a member? Login →
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
