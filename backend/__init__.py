@@ -55,6 +55,9 @@ def create_app():
     # Create database tables
     with app.app_context():
         from backend import models  # noqa: F401
+        # Ensure instance directory exists for SQLite
+        instance_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'instance')
+        os.makedirs(instance_path, exist_ok=True)
         db.create_all()
 
     # Ensure upload folder exists
