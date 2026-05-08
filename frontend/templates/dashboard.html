@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+
+{% block title %}SkinSense | Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+  <div class="hero-left">
+    <div class="hero-badge">✦ Your personalized skincare companion</div>
+    <h1 class="hero-title">
+      Welcome back,<br><span class="hero-name">{{ current_user.name.split(' ')[0] }}.</span>
+    </h1>
+    <p class="hero-subtitle">
+      Your skin is glowing today. Let's explore AI-powered tools crafted just for your unique profile.
+    </p>
+    <div class="hero-cta">
+      <a href="{{ url_for('analysis.skin_analysis') }}" class="btn-primary">Start Analysis →</a>
+      <a href="{{ url_for('trends.trend_verification') }}" class="btn-ghost">▶ How it works</a>
+    </div>
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-num">94</div>
+        <div class="stat-label">Skin Score</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">12</div>
+        <div class="stat-label">Products Scanned</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">7</div>
+        <div class="stat-label">Day Streak</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right" style="padding:40px 40px 40px 0;">
+    <div style="position:relative; width:420px; max-width:100%;">
+      <!-- Main skin score card -->
+      <div
+        style="position:relative; width:300px; background:var(--surface); border-radius:24px; padding:28px; box-shadow:0 20px 60px var(--shadow-lg); border:1px solid var(--border); animation:floatA 6s ease-in-out infinite; transition:background 0.35s;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+          <div
+            style="width:44px;height:44px;border-radius:12px;background:var(--pill-bg);display:flex;align-items:center;justify-content:center;font-size:22px;">
+            🧬</div>
+          <div>
+            <div
+              style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-sub);font-weight:500;">
+              Skin Analysis</div>
+            <div style="font-size:0.95rem;font-weight:600;color:var(--text);">Your Report</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:8px;margin-bottom:16px;">
+          <span
+            style="font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:700;color:var(--text);line-height:1;">94</span>
+          <span style="font-size:0.78rem;color:var(--text-sub);padding-bottom:5px;">/ 100</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:10px;font-size:0.72rem;color:var(--text-sub);">
+            <span style="min-width:68px">Hydration</span>
+            <div style="flex:1;height:5px;background:var(--bar-bg);border-radius:100px;overflow:hidden;">
+              <div
+                style="width:88%;height:100%;border-radius:100px;background:linear-gradient(90deg,var(--rose),var(--mauve));">
+              </div>
+            </div>
+            <span>88%</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:0.72rem;color:var(--text-sub);">
+            <span style="min-width:68px">Texture</span>
+            <div style="flex:1;height:5px;background:var(--bar-bg);border-radius:100px;overflow:hidden;">
+              <div
+                style="width:75%;height:100%;border-radius:100px;background:linear-gradient(90deg,var(--rose),var(--mauve));">
+              </div>
+            </div>
+            <span>75%</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:0.72rem;color:var(--text-sub);">
+            <span style="min-width:68px">Radiance</span>
+            <div style="flex:1;height:5px;background:var(--bar-bg);border-radius:100px;overflow:hidden;">
+              <div
+                style="width:92%;height:100%;border-radius:100px;background:linear-gradient(90deg,var(--rose),var(--mauve));">
+              </div>
+            </div>
+            <span>92%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ingredient card -->
+      <div
+        style="position:absolute;top:0;right:0;width:185px;background:var(--surface);border-radius:18px;padding:16px 18px;box-shadow:0 12px 40px var(--shadow);border:1px solid var(--border);animation:floatB 7s ease-in-out infinite;transition:background 0.35s;">
+        <div style="font-size:0.73rem;font-weight:600;color:var(--text);margin-bottom:10px;">🔬 Ingredient Scan</div>
+        <div
+          style="display:flex;justify-content:space-between;align-items:center;font-size:0.7rem;color:var(--text-sub);margin-bottom:6px;">
+          <span>Niacinamide</span><span
+            style="font-size:0.58rem;font-weight:600;padding:2px 8px;border-radius:100px;background:rgba(107,203,119,0.15);color:#3d8b44;">Safe</span>
+        </div>
+        <div
+          style="display:flex;justify-content:space-between;align-items:center;font-size:0.7rem;color:var(--text-sub);margin-bottom:6px;">
+          <span>Fragrance</span><span
+            style="font-size:0.58rem;font-weight:600;padding:2px 8px;border-radius:100px;background:rgba(251,191,36,0.15);color:#b45309;">Caution</span>
+        </div>
+        <div
+          style="display:flex;justify-content:space-between;align-items:center;font-size:0.7rem;color:var(--text-sub);margin-bottom:6px;">
+          <span>Alcohol</span><span
+            style="font-size:0.58rem;font-weight:600;padding:2px 8px;border-radius:100px;background:rgba(248,113,113,0.15);color:#b91c1c;">Avoid</span>
+        </div>
+        <div
+          style="display:flex;justify-content:space-between;align-items:center;font-size:0.7rem;color:var(--text-sub);">
+          <span>Hyaluronic</span><span
+            style="font-size:0.58rem;font-weight:600;padding:2px 8px;border-radius:100px;background:rgba(107,203,119,0.15);color:#3d8b44;">Safe</span>
+        </div>
+      </div>
+
+      <!-- Trend card -->
+      <div
+        style="position:absolute;bottom:20px;right:10px;width:180px;background:var(--surface);border-radius:18px;padding:16px 18px;box-shadow:0 12px 40px var(--shadow);border:1px solid var(--border);animation:floatC 5s ease-in-out infinite;transition:background 0.35s;">
+        <div style="font-size:0.73rem;font-weight:600;color:var(--text);margin-bottom:10px;">🔥 Trend Check</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:0.7rem;color:var(--text-sub);margin-bottom:8px;">
+          <span>✅</span>
+          <div>
+            <div style="font-weight:600;color:var(--text);font-size:0.72rem;">Skin Cycling</div>
+            <div style="font-size:0.62rem;color:var(--text-sub);">Science-backed</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:0.7rem;color:var(--text-sub);margin-bottom:8px;">
+          <span>⚠️</span>
+          <div>
+            <div style="font-weight:600;color:var(--text);font-size:0.72rem;">Ice Globes</div>
+            <div style="font-size:0.62rem;color:var(--text-sub);">Limited evidence</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:0.7rem;color:var(--text-sub);"><span>❌</span>
+          <div>
+            <div style="font-weight:600;color:var(--text);font-size:0.72rem;">Daily Slugging</div>
+            <div style="font-size:0.62rem;color:var(--text-sub);">Oily skin — skip</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUICK BAR -->
+<div class="quick-bar">
+  <a href="{{ url_for('analysis.skin_analysis') }}" class="quick-item">🧬 Skin Analysis</a>
+  <a href="{{ url_for('ingredients.ingredient_scan') }}" class="quick-item">📸 Ingredient Scanner</a>
+  <a href="{{ url_for('trends.trend_verification') }}" class="quick-item">🔥 Trend Verification</a>
+  <a href="{{ url_for('pages.natural_remedies') }}" class="quick-item">🌿 Remedies</a>
+  <a href="{{ url_for('pages.dermatologists') }}" class="quick-item">👩‍⚕️ Dermatologists</a>
+  <a href="{{ url_for('pages.products') }}" class="quick-item">👩‍⚕️ Expert Picks</a>
+</div>
+
+<!-- FEATURE CARDS SECTION -->
+<section class="cards-section">
+  <div class="section-label">What We Offer</div>
+  <h2 class="section-title">AI tools built for <em>your skin</em></h2>
+  <div class="cards-grid">
+
+    <a href="{{ url_for('analysis.skin_analysis') }}" class="card-link">
+      <div class="dash-card">
+        <div class="card-icon-wrap ci-pink">🧬</div>
+        <div class="card-title">Skin Analysis</div>
+        <p class="card-desc">Get a deeply personalized skin health report based on your unique profile, history, and
+          environment.</p>
+        <button class="card-action-btn">Explore</button>
+      </div>
+    </a>
+
+    <a href="{{ url_for('ingredients.ingredient_scan') }}" class="card-link">
+      <div class="dash-card dash-card--featured">
+        <div class="popular-badge">✦ Popular</div>
+        <div class="card-icon-wrap ci-sage">📸</div>
+        <div class="card-title">Ingredient Scanner</div>
+        <p class="card-desc">Scan any product label and instantly see which ingredients are safe, risky, or a concern
+          for your skin type.</p>
+        <button class="card-action-btn card-action-btn--primary">Scan Now</button>
+      </div>
+    </a>
+
+    <a href="{{ url_for('trends.trend_verification') }}" class="card-link">
+      <div class="dash-card">
+        <div class="card-icon-wrap ci-gold">🔥</div>
+        <div class="card-title">Trend Verification</div>
+        <p class="card-desc">Separate skincare fact from fiction. We verify viral trends with peer-reviewed science so
+          you decide smarter.</p>
+        <button class="card-action-btn">Verify</button>
+      </div>
+    </a>
+
+    <a href="{{ url_for('pages.natural_remedies') }}" class="card-link">
+      <div class="dash-card">
+        <div class="card-icon-wrap ci-sage">🌿</div>
+        <div class="card-title">Remedies</div>
+        <p class="card-desc">Discover natural skincare remedies tailored for your skin type, backed by traditional
+          wisdom and modern research.</p>
+        <button class="card-action-btn">Discover</button>
+      </div>
+    </a>
+
+    <a href="{{ url_for('pages.dermatologists') }}" class="card-link">
+      <div class="dash-card">
+        <div class="card-icon-wrap ci-pink">👩‍⚕️</div>
+        <div class="card-title">Dermatologists</div>
+        <p class="card-desc">Connect with verified skin experts for professional guidance, personalized prescriptions,
+          and follow-ups.</p>
+        <button class="card-action-btn">Connect</button>
+      </div>
+    </a>
+
+    <a href="{{ url_for('pages.products') }}" class="card-link">
+      <div class="dash-card">
+        <div class="card-icon-wrap ci-gold">👩‍⚕️</div>
+        <div class="card-title">Expert Picks</div>
+        <p class="card-desc">Curated skincare products perfect for your unique skin type, carefully selected by
+          certified dermatologists.</p>
+        <button class="card-action-btn">Shop Smarter</button>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ROUTINE SECTION -->
+<section class="routine-section">
+  <div class="routine-inner">
+    <div class="routine-text">
+      <div class="section-label">Daily Routine</div>
+      <h2 class="routine-title">Your evening<br><em>ritual, refined.</em></h2>
+      <p class="routine-desc">We've curated a step-by-step evening routine based on your latest skin analysis and
+        product preferences. Consistency is your superpower.</p>
+      <a href="{{ url_for('analysis.skin_analysis') }}" class="btn-primary">View full routine</a>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num-label">01</div>
+        <div class="step-icon">💧</div>
+        <div>
+          <div class="step-name">Oil Cleanser</div>
+          <div class="step-time">60 seconds · massage gently</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num-label">02</div>
+        <div class="step-icon">🫧</div>
+        <div>
+          <div class="step-name">Gel Cleanser</div>
+          <div class="step-time">30 seconds · lukewarm water</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num-label">03</div>
+        <div class="step-icon">✨</div>
+        <div>
+          <div class="step-name">Vitamin C Serum</div>
+          <div class="step-time">2–3 drops · pat on dry skin</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num-label">04</div>
+        <div class="step-icon">🌿</div>
+        <div>
+          <div class="step-name">Moisturiser</div>
+          <div class="step-time">Pea-sized amount · upward strokes</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num-label">05</div>
+        <div class="step-icon">🌙</div>
+        <div>
+          <div class="step-name">Night Cream</div>
+          <div class="step-time">Allow 5 min to absorb</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}SkinSense | Natural Remedies{% endblock %}
+
+{% block content %}
+<div class="nr-page">
+
+    <div class="nr-header">
+        <h1>Natural Remedies 🌿</h1>
+        <p>Dermatologist-approved home treatments for glowing skin.</p>
+    </div>
+
+    <!-- Controls -->
+    <div class="nr-controls">
+        <input type="text" id="searchInput" placeholder="🔍  Search remedies (e.g. Aloe, Honey)..." class="nr-search">
+        <div class="nr-filter-group">
+            <button class="nr-filter-pill active" data-filter="all">All Types</button>
+            <button class="nr-filter-pill" data-filter="oily">Oily</button>
+            <button class="nr-filter-pill" data-filter="dry">Dry</button>
+            <button class="nr-filter-pill" data-filter="combination">Combination</button>
+            <button class="nr-filter-pill" data-filter="sensitive">Sensitive</button>
+            <button class="nr-filter-pill" data-filter="acne-prone">Acne-Prone</button>
+            <button class="nr-filter-pill" data-filter="normal">Normal</button>
+        </div>
+    </div>
+
+    <div class="nr-grid" id="remediesGrid">
+        {% for r in remedies %}
+        <div class="nr-card" data-name="{{ r.name | lower }}" data-skintype="{{ r.skin_type | lower }}">
+            <div class="nr-card-top">
+                <h3 class="nr-card-name"><span class="nr-icon">{{ r.icon }}</span>{{ r.name }}</h3>
+                <button class="nr-fav-btn" aria-label="Save to favorites">❤</button>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <span class="nr-skin-tag">{{ r.skin_type }}</span>
+                <span class="nr-rating">⭐ {{ r.rating }}</span>
+            </div>
+            <p class="nr-benefit">{{ r.benefit }}</p>
+            <div class="nr-usage">
+                <p><strong>How to use:</strong> {{ r.usage }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <a href="{{ url_for('main.dashboard') }}" class="nr-back">⬅ Back to Dashboard</a>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Favorites Toggle
+        document.querySelectorAll('.nr-fav-btn').forEach(btn => {
+            const cardName = btn.closest('.nr-card').getAttribute('data-name');
+            let favs = JSON.parse(localStorage.getItem('skinSenseFavs') || '[]');
+            if (favs.includes(cardName)) btn.classList.add('active');
+            btn.addEventListener('click', () => {
+                btn.classList.toggle('active');
+                let updatedFavs = JSON.parse(localStorage.getItem('skinSenseFavs') || '[]');
+                if (btn.classList.contains('active')) { if (!updatedFavs.includes(cardName)) updatedFavs.push(cardName); }
+                else { updatedFavs = updatedFavs.filter(f => f !== cardName); }
+                localStorage.setItem('skinSenseFavs', JSON.stringify(updatedFavs));
+            });
+        });
+
+        // Search and Pill Filter
+        const searchInput = document.getElementById('searchInput');
+        const pillBtns = document.querySelectorAll('.nr-filter-pill');
+        const cards = document.querySelectorAll('.nr-card');
+        let activePillFilter = 'all';
+
+        pillBtns.forEach(pill => {
+            pill.addEventListener('click', () => {
+                pillBtns.forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                activePillFilter = pill.getAttribute('data-filter');
+                filterCards();
+            });
+        });
+
+        function filterCards() {
+            const searchTerm = searchInput.value.toLowerCase();
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name');
+                const skinType = card.getAttribute('data-skintype');
+                const textContent = card.textContent.toLowerCase();
+                const matchesSearch = name.includes(searchTerm) || textContent.includes(searchTerm);
+                const matchesFilter = activePillFilter === 'all' ? true : skinType.includes(activePillFilter) || skinType.includes('all skin types');
+                card.style.display = (matchesSearch && matchesFilter) ? 'block' : 'none';
+            });
+        }
+
+        searchInput.addEventListener('input', filterCards);
+    });
+</script>
+{% endblock %}

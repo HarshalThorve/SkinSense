@@ -12,15 +12,25 @@ ENV/
 env.bak/
 venv.bak/
 
-# Project structure
+# Database
 instance/
 database.db
+*.db
 
 # Flask and general
 tempCodeRunnerFile.py
 *.swp
 *.swo
 
-# Images / Uploads (If any get created)
-static/uploads/*
-!static/uploads/.gitkeep
+# Uploads (ephemeral on server)
+frontend/static/uploads/*
+!frontend/static/uploads/.gitkeep
+static/uploads/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,1027 @@
+{% extends "base.html" %}
+
+{% block title %}SkinSense | Skin Analysis{% endblock %}
+
+{% block styles %}<style>
+    /* Skin type & concern selected state — uses purple/mauve accent from main theme */
+    .skin-type-card.selected,
+    .concern-card.selected {
+        border-color: var(--mauve) !important;
+        background-color: var(--pill-bg) !important;
+        box-shadow: 0 0 0 3px rgba(201, 136, 158, 0.25) !important;
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 600px) {
+
+        .skin-type-grid,
+        .concerns-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* new styles for form */
+    .sa-form-section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 24px;
+        animation: fadeUp 0.6s ease;
+    }
+
+    .sa-form-section h3 {
+        font-size: 1.2rem;
+        color: var(--mauve);
+        margin-bottom: 16px;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 8px;
+    }
+
+    .sa-form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .sa-form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: var(--text);
+    }
+
+    .sa-input,
+    .sa-select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--bg);
+        color: var(--text);
+        font-size: 15px;
+    }
+
+    .sa-input:focus,
+    .sa-select:focus {
+        outline: none;
+        border-color: var(--mauve);
+    }
+
+    .sa-radio-group {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .sa-radio-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        background: var(--surface);
+        padding: 10px 16px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        transition: all 0.2s ease;
+    }
+
+    .sa-radio-label:has(input:checked) {
+        background: rgba(201, 136, 158, 0.15) !important;
+        border-color: var(--mauve) !important;
+        color: var(--mauve);
+    }
+
+    .sa-radio-label input {
+        display: none;
+    }
+
+    /* --- Styled Select / Dropdown --- */
+    .sa-select {
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23c9889e' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        padding-right: 40px;
+        cursor: pointer;
+        border-radius: 10px !important;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .sa-select:focus {
+        outline: none;
+        border-color: var(--mauve) !important;
+        box-shadow: 0 0 0 3px rgba(201, 136, 158, 0.2);
+    }
+
+    .sa-select option {
+        background: var(--surface, #fff);
+        color: var(--text, #1a1a2e);
+        border-radius: 6px;
+        padding: 8px 12px;
+    }
+
+    /* --- Concern Cards fix --- */
+    .concern-card {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .concern-card.selected {
+        border-color: var(--mauve) !important;
+        background-color: var(--pill-bg) !important;
+        box-shadow: 0 0 0 3px rgba(201, 136, 158, 0.25) !important;
+        transform: translateY(-2px);
+    }
+
+    /* Progress Rings */
+    .progress-ring {
+        position: relative;
+        width: 44px;
+        height: 44px;
+    }
+
+    .progress-ring circle {
+        fill: transparent;
+        stroke-width: 4;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+        stroke-dasharray: 100;
+        stroke-dashoffset: 100;
+        transition: stroke-dashoffset 1.5s ease;
+    }
+
+    .progress-ring .bg {
+        stroke: var(--border);
+        stroke-dashoffset: 0;
+    }
+
+    .progress-ring .fg {
+        stroke: var(--mauve);
+        stroke-linecap: round;
+    }
+
+    .progress-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 11px;
+        font-weight: bold;
+        color: var(--text);
+    }
+
+    /* Severity Badges */
+    .sev-badge {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .sev-green {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+
+    .sev-yellow {
+        background: #fef9c3;
+        color: #ca8a04;
+    }
+
+    .sev-orange {
+        background: #ffedd5;
+        color: #ea580c;
+    }
+
+    .sev-red {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    [data-theme="dark"] .sev-green {
+        background: rgba(34, 197, 94, 0.15);
+        color: #4ade80;
+    }
+
+    [data-theme="dark"] .sev-yellow {
+        background: rgba(234, 179, 8, 0.15);
+        color: #facc15;
+    }
+
+    [data-theme="dark"] .sev-orange {
+        background: rgba(234, 88, 12, 0.15);
+        color: #fb923c;
+    }
+
+    [data-theme="dark"] .sev-red {
+        background: rgba(239, 68, 68, 0.15);
+        color: #f87171;
+    }
+
+    /* Stats Row */
+    .ai-stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+
+    .ai-stat-card {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        padding: 16px;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .ai-stat-val {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--mauve);
+        margin-top: 5px;
+    }
+
+    /* Form Steps */
+    .form-step {
+        display: none;
+        animation: fadeUp 0.4s ease;
+    }
+
+    .form-step.active {
+        display: block;
+    }
+
+    .ai-result-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+    }
+
+    .ai-result-item.priority {
+        border: 1px solid var(--mauve);
+        background: rgba(201, 136, 158, 0.05);
+    }
+
+    /* TOOLTIPS */
+    .info-tooltip {
+        position: relative; display: inline-flex; cursor: help; font-style: normal; font-size: 12px; margin-left: 5px; opacity: 0.7;
+    }
+    .info-tooltip::after {
+        content: attr(data-tip); position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%);
+        width: 220px; background: var(--surface2); color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 11px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        opacity: 0; visibility: hidden; transition: 0.3s; z-index: 100; pointer-events: none; text-align: center;
+    }
+    .info-tooltip:hover::after, .info-tooltip:active::after { opacity: 1; visibility: visible; }
+    
+    /* RADIO BUTTON FIXES */
+    .sa-radio-group label { transition: all 0.2s ease; cursor: pointer; }
+    .sa-radio-group label:has(input[value="Yes"]:checked), .sa-radio-group label:has(input[value="Under 5 min"]:checked), .sa-radio-group label:has(input[value="Premium"]:checked) {
+        background: #16a34a !important; color: white !important; border-color: #16a34a !important;
+    }
+    .sa-radio-group label:has(input[value="No"]:checked), .sa-radio-group label:has(input[value="15+ min"]:checked), .sa-radio-group label:has(input[value="Budget-friendly"]:checked) {
+        background: #ef4444 !important; color: white !important; border-color: #ef4444 !important;
+    }
+    
+    /* AI SUMMARY CARD */
+    .ai-summary-card {
+        background: linear-gradient(135deg, rgba(168,85,247,0.1), rgba(236,72,153,0.1));
+        border: 1px solid rgba(168,85,247,0.3); border-radius: 12px; padding: 16px;
+        margin-top: 20px; font-size: 14px; line-height: 1.5; color: var(--text);
+    }
+    
+    /* MOBILE RESPONSIVENESS */
+    @media (max-width: 600px) {
+        .ai-stats-row { flex-direction: column !important; }
+        .ai-stat-card { width: 100% !important; margin-bottom: 10px; }
+        .concern-grid { grid-template-columns: 1fr 1fr !important; }
+        .sa-radio-label { min-height: 48px; display: flex; align-items: center; justify-content: center; }
+        .sa-nav { flex-direction: column-reverse; gap: 10px; }
+        .sa-nav button { width: 100%; margin: 0; }
+        .form-step { padding: 16px !important; }
+        body { font-size: 14px; }
+    }
+</style>{% endblock %}
+
+
+{% block content %}
+<div class="sa-page">
+    <form method="POST" enctype="multipart/form-data" id="analysisForm">
+
+        <!-- ============================= STEP: UPLOAD ============================= -->
+        <div id="step-upload" class="sa-step">
+            <div class="sa-hero">
+                <div class="sa-icon-wrap">🧪</div>
+                <h1>Skin Analysis</h1>
+                <p>Scan your face or upload an image to get a comprehensive AI-powered analysis.</p>
+            </div>
+
+            <div class="upload-grid">
+                <div class="upload-card" onclick="startCamera()">
+                    <div class="upload-card-icon">📷</div>
+                    <div class="upload-card-title">Scan Face</div>
+                    <div class="upload-card-desc">Use your camera for a live photo.</div>
+                </div>
+                <div class="upload-card" onclick="document.getElementById('face_image').click()">
+                    <div class="upload-card-icon">📤</div>
+                    <div class="upload-card-title">Upload Image</div>
+                    <div class="upload-card-desc">Upload a photo from your gallery.</div>
+                </div>
+            </div>
+
+            <input type="file" name="face_image" id="face_image" accept="image/*" class="hidden"
+                onchange="handleFileUpload(this)">
+            <input type="hidden" name="camera_image" id="camera_image">
+
+            <div id="camera-container" class="hidden">
+                <video id="video" autoplay></video><br>
+                <button type="button" class="submit-btn" style="width:auto;padding:10px 24px;margin-top:0;"
+                    onclick="capturePhoto()">📸 Capture Photo</button>
+            </div>
+
+            <div id="preview-area" class="hidden">
+                <img id="preview-img" src=""><br><br>
+                <button type="button" onclick="startAnalysis()" class="submit-btn"
+                    style="width:auto;padding:12px 30px;">
+                    Analyze Face Picture &rarr;
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================= STEP: AI RESULT ============================= -->
+        <div id="step-ai" class="sa-step hidden">
+            <div class="sa-hero">
+                <div class="sa-icon-wrap">🤖</div>
+                <h1>AI Vision Findings</h1>
+                <p id="analysis-subtitle" class="subtitle-loading">Analyzing your skin based on the image provided...
+                </p>
+            </div>
+
+            <div id="analysis-loading" class="analysis-spinner">
+                <style>
+                    @keyframes pulseText {
+
+                        0%,
+                        100% {
+                            opacity: 1;
+                        }
+
+                        50% {
+                            opacity: 0.5;
+                        }
+                    }
+
+                    .subtitle-loading {
+                        animation: pulseText 1.5s infinite;
+                    }
+
+                    .scanner-box {
+                        width: 100%;
+                        height: 200px;
+                        max-width: 300px;
+                        margin: 0 auto 20px;
+                        border: 2px dashed #a855f7;
+                        border-radius: 16px;
+                        position: relative;
+                        overflow: hidden;
+                        background: rgba(168, 85, 247, 0.05);
+                    }
+
+                    .scanner-line {
+                        width: 100%;
+                        height: 4px;
+                        background: #ec4899;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        box-shadow: 0 0 10px #ec4899, 0 0 20px #a855f7;
+                        animation: scan 2s linear infinite;
+                    }
+
+                    @keyframes scan {
+                        0% {
+                            top: -10px;
+                            opacity: 0;
+                        }
+
+                        10% {
+                            opacity: 1;
+                        }
+
+                        90% {
+                            opacity: 1;
+                        }
+
+                        100% {
+                            top: 100%;
+                            opacity: 0;
+                        }
+                    }
+
+                    .ai-process-text {
+                        font-family: monospace;
+                        color: #a855f7;
+                        margin-bottom: 5px;
+                    }
+                </style>
+                <div class="scanner-box">
+                    <div class="scanner-line"></div>
+                </div>
+                <div class="ai-process-text" id="ai-status-text">INITIALIZING AI ENGINE...</div>
+                <p style="color:#9ca3af;font-size:15px;" id="ai-sub-text">Mapping facial features & extracting pixels
+                </p>
+            </div>
+
+            <div id="analysis-results" class="hidden" style="max-width:540px;margin:0 auto;">
+                <div id="results-list"></div>
+                <input type="hidden" name="ai_pimples" id="ai_pimples_input">
+                <input type="hidden" name="ai_oily" id="ai_oily_input">
+                <input type="hidden" name="ai_spots" id="ai_spots_input">
+                <input type="hidden" name="ai_findings_json" id="ai_findings_json_input">
+            </div>
+
+            <div id="continue-btn-wrap" class="sa-nav hidden" style="justify-content:center; gap:12px;">
+                <button type="button" class="sa-btn-back" onclick="showStep('step-upload')">← Retake Photo</button>
+                <button type="button" class="sa-btn-next" onclick="showStep('step-questionnaire')">Continue →</button>
+            </div>
+        </div>
+
+        <!-- ============================= STEP 2: QUESTIONNAIRE ============================= -->
+        <div id="step-questionnaire" class="sa-step hidden">
+            <div class="step-indicator">
+                <div class="step-indicator-item">
+                    <div class="step-num active">1</div>
+                    <span class="step-label active">AI Analysis</span>
+                </div>
+                <div class="step-connector done"></div>
+                <div class="step-indicator-item">
+                    <div class="step-num active">2</div>
+                    <span class="step-label active">Questionnaire <span id="q-progress-text">(1/3)</span></span>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step-indicator-item">
+                    <div class="step-num">3</div>
+                    <span class="step-label">Your Report</span>
+                </div>
+            </div>
+
+            <div id="q-sections-container">
+
+                <!-- Q1: Basics -->
+                <div class="form-step active" id="qs-1">
+                    <div class="sa-section-title">Personalize Your Assessment</div>
+                    <div class="sa-section-sub">Help us understand your skin better.</div>
+
+                    <div class="sa-form-section">
+                        <h3>👤 Basic Information</h3>
+                        <div class="sa-form-group">
+                            <label>What is your age?</label>
+                            <input type="number" name="age" class="sa-input" placeholder="e.g. 25" required>
+                        </div>
+                        <div class="sa-form-group">
+                            <label>What is your gender?</label>
+                            <select name="gender" class="sa-select" required>
+                                <option value="" disabled selected>Select gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="sa-form-group">
+                            <label>What type of climate do you live in?</label>
+                            <select name="climate" class="sa-select" required>
+                                <option value="" disabled selected>Select climate</option>
+                                <option value="Hot">Hot</option>
+                                <option value="Humid">Humid</option>
+                                <option value="Cold">Cold</option>
+                                <option value="Dry">Dry</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="sa-nav">
+                        <button type="button" class="sa-btn-back" onclick="showStep('step-ai')">← Back to AI</button>
+                        <div style="display:flex; gap:10px;">
+                            <button type="button" class="sa-btn-back"
+                                onclick="alert('Progress saved! We will email you a link to pick up where you left off.')">💾
+                                Save & Continue Later</button>
+                            <button type="button" class="sa-btn-next" onclick="nextQStep(1)">Next →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q2: Skin Type & Concerns & Goals -->
+                <div class="form-step" id="qs-2">
+                    <div class="sa-section-title">Your Skin Goals</div>
+
+                    <div class="sa-form-section">
+                        <h3>🎯 Primary Focus</h3>
+                        <div class="sa-form-group">
+                            <label>What's your main skincare goal?</label>
+                            <select name="goal" class="sa-select" required>
+                                <option value="Clear skin">Clear skin (Acne Control)</option>
+                                <option value="Anti-aging">Anti-aging & Wrinkle Reduction</option>
+                                <option value="Brightening">Brightening & Fading Spots</option>
+                                <option value="Hydration">Hydration & Barrier Repair</option>
+                                <option value="Oil control">Oil Control</option>
+                            </select>
+                        </div>
+
+                        <div class="sa-form-group">
+                            <label>What is your skin type?</label>
+                            <select name="skin_type" class="sa-select" required
+                                onchange="document.getElementById('skin_type_input').value = this.value">
+                                <option value="" disabled selected>Select skin type</option>
+                                <option value="Oily">Oily</option>
+                                <option value="Dry">Dry</option>
+                                <option value="Combination">Combination</option>
+                                <option value="Normal">Normal</option>
+                                <option value="Sensitive">Sensitive</option>
+                            </select>
+                            <input type="hidden" name="skin_type_hidden" id="skin_type_input" value="Normal">
+                        </div>
+
+                        <div class="sa-form-group">
+                            <label>Any persistent concerns? (Select up to 3)</label>
+                            <div class="concerns-grid"
+                                style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));">
+                                <div class="concern-card" onclick="toggleConcernCard(this, 'Acne / Pimples')">
+                                    <span class="concern-icon">🔴</span>Acne / Pimples
+                                </div>
+                                <div class="concern-card" onclick="toggleConcernCard(this, 'Dark Spots')">
+                                    <span class="concern-icon">🟤</span>Dark Spots
+                                </div>
+                                <div class="concern-card" onclick="toggleConcernCard(this, 'Pigmentation')">
+                                    <span class="concern-icon">🟫</span>Pigmentation
+                                </div>
+                                <div class="concern-card" onclick="toggleConcernCard(this, 'Wrinkles')">
+                                    <span class="concern-icon">⏳</span>Wrinkles
+                                </div>
+                                <div class="concern-card" onclick="toggleConcernCard(this, 'Redness')">
+                                    <span class="concern-icon">🖊️</span>Redness
+                                </div>
+                                <div class="concern-card" onclick="toggleConcernCard(this, 'None')">
+                                    <span class="concern-icon">✅</span>None
+                                </div>
+                            </div>
+                            <div id="concern-checkboxes"></div>
+                        </div>
+                    </div>
+
+                    <div class="sa-nav">
+                        <button type="button" class="sa-btn-back" onclick="prevQStep(2)">← Back</button>
+                        <button type="button" class="sa-btn-next" onclick="nextQStep(2)">Next →</button>
+                    </div>
+                </div>
+
+                <!-- Adaptive placeholder -->
+                <div class="form-step" id="qs-adaptive">
+                    <div class="sa-section-title">AI Targeted Follow-ups</div>
+                    <div class="sa-form-section" id="adaptive-content">
+                        <!-- Filled by JS -->
+                    </div>
+                    <div class="sa-nav">
+                        <button type="button" class="sa-btn-back" onclick="prevQStep('adaptive')">← Back</button>
+                        <button type="button" class="sa-btn-next" onclick="nextQStep('adaptive')">Next →</button>
+                    </div>
+                </div>
+
+                <!-- Q3: Lifestyle & Budget -->
+                <div class="form-step" id="qs-3">
+                    <div class="sa-section-title">Lifestyle & Routine</div>
+
+                    <div class="sa-form-section">
+                        <h3>⏳ Time & Budget</h3>
+                        <div class="sa-form-group">
+                            <label>What's your budget for skincare?</label>
+                            <select name="budget" class="sa-select" required>
+                                <option value="Budget-friendly">Budget-friendly</option>
+                                <option value="Mid-range" selected>Mid-range</option>
+                                <option value="Premium">Premium</option>
+                            </select>
+                        </div>
+                        <div class="sa-form-group">
+                            <label>How much time can you spend on skincare daily?</label>
+                            <select name="time_spend" class="sa-select" required>
+                                <option value="Under 5 min">Under 5 min (Minimalist)</option>
+                                <option value="5-10 min" selected>5-10 min (Standard)</option>
+                                <option value="10-15 min">10-15 min</option>
+                                <option value="15+ min">15+ min (Extensive)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="sa-form-section">
+                        <h3>🏥 Lifestyle</h3>
+                        <div class="sa-form-group">
+                            <label>Do you use sunscreen daily?</label>
+                            <div class="sa-radio-group">
+                                <label class="sa-radio-label"><input type="radio" name="sunscreen" value="Yes"
+                                        required>Yes</label>
+                                <label class="sa-radio-label"><input type="radio" name="sunscreen" value="No"
+                                        required>No</label>
+                            </div>
+                        </div>
+                        <div class="sa-form-group">
+                            <label>Do you have any known skin allergies?</label>
+                            <div class="sa-radio-group">
+                                <label class="sa-radio-label"><input type="radio" name="has_allergies" value="Yes"
+                                        required
+                                        onchange="document.getElementById('allergies_input').style.display='block'; document.getElementById('allergies_input').required=true;">Yes</label>
+                                <label class="sa-radio-label"><input type="radio" name="has_allergies" value="No"
+                                        required
+                                        onchange="document.getElementById('allergies_input').style.display='none'; document.getElementById('allergies_input').required=false; document.getElementById('allergies_input').value='';">No</label>
+                            </div>
+                            <input type="text" name="allergies" id="allergies_input" class="sa-input"
+                                style="display:none; margin-top: 10px;" placeholder="Specify your allergies">
+                        </div>
+                        <div class="sa-form-group">
+                            <label>How many hours of sleep do you get daily?</label>
+                            <input type="number" name="sleep" class="sa-input" placeholder="e.g. 7" required>
+                        </div>
+                        <div class="sa-form-group">
+                            <label>How much water do you drink per day?</label>
+                            <select name="water" class="sa-select" required>
+                                <option value="" disabled selected>Select amount</option>
+                                <option value="Less than 1 liter">Less than 1 liter</option>
+                                <option value="1-2 liters">1-2 liters</option>
+                                <option value="More than 2 liters">More than 2 liters</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="sa-nav">
+                        <button type="button" class="sa-btn-back" onclick="prevQStep(3)">← Back</button>
+                        <button type="submit" class="sa-btn-next" id="generate-btn"
+                            onclick="document.getElementById('generate-btn').innerHTML='Generating...';">✦ Generate
+                            Report</button>
+                    </div>
+                </div>
+
+            </div> <!-- end qs sections Container -->
+        </div>
+    </form>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let selectedSkinType = '';
+    let selectedConcerns = [];
+
+    // ── Show / hide steps ──
+    function showStep(id) {
+        document.querySelectorAll('.sa-step').forEach(s => s.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ── Upload / Camera ──
+    function handleFileUpload(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('preview-img').src = e.target.result;
+                document.getElementById('preview-area').classList.remove('hidden');
+                document.getElementById('camera-container').classList.add('hidden');
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    async function startCamera() {
+        document.getElementById('camera-container').classList.remove('hidden');
+        document.getElementById('preview-area').classList.add('hidden');
+        const video = document.getElementById('video');
+        try {
+            video.srcObject = await navigator.mediaDevices.getUserMedia({ video: true });
+        } catch (err) { alert("Camera error: " + err); }
+    }
+
+    function capturePhoto() {
+        const video = document.getElementById('video');
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        const dataUrl = canvas.toDataURL('image/png');
+        document.getElementById('camera_image').value = dataUrl;
+        document.getElementById('preview-img').src = dataUrl;
+        document.getElementById('preview-area').classList.remove('hidden');
+        document.getElementById('camera-container').classList.add('hidden');
+        video.srcObject?.getTracks().forEach(t => t.stop());
+    }
+
+    // ── AI Analysis ──
+    function startAnalysis() {
+        showStep('step-ai');
+        document.getElementById('analysis-loading').style.display = 'flex';
+        document.getElementById('analysis-results').classList.add('hidden');
+        document.getElementById('continue-btn-wrap').classList.add('hidden');
+
+        let interval = 0, p = 0, subt = document.getElementById('analysis-subtitle');
+        subt.classList.add('subtitle-loading');
+        subt.style.color = "";
+
+        let simInterval = setInterval(() => {
+            p += Math.floor(Math.random() * 5) + 1;
+            if (p > 99) p = 99;
+            subt.textContent = `AI is analyzing your skin... ${p}%`;
+        }, 150);
+
+        const formData = new FormData();
+        const faceImage = document.getElementById('face_image').files[0];
+        const cameraImage = document.getElementById('camera_image').value;
+
+        if (cameraImage) formData.append('image', cameraImage);
+        else if (faceImage) formData.append('file', faceImage);
+        else { alert("No image found."); clearInterval(simInterval); showStep('step-upload'); return; }
+
+        fetch('/api/analyze-image', { method: 'POST', body: formData })
+            .then(r => r.json().then(data => ({ status: r.status, ok: r.ok, data })))
+            .then(({ status, ok, data }) => {
+                if (!ok || data.error) {
+                    throw new Error(data.error || 'Server error');
+                }
+                clearInterval(simInterval);
+                subt.textContent = `AI is analyzing your skin... 100%`;
+                document.getElementById('ai-status-text').innerText = 'ANALYSIS COMPLETE';
+                document.getElementById('ai-sub-text').innerText = 'Generating insights';
+
+                setTimeout(() => {
+                    document.getElementById('analysis-loading').style.display = 'none';
+                    document.getElementById('analysis-results').classList.remove('hidden');
+                    document.getElementById('continue-btn-wrap').classList.remove('hidden');
+
+                    subt.classList.remove('subtitle-loading');
+                    subt.textContent = "✓ Analysis complete. Here's what we found.";
+                    subt.style.color = "#4ade80";
+
+                    document.getElementById('ai_pimples_input').value = data.pimples;
+                    document.getElementById('ai_oily_input').value = data.oily;
+                    document.getElementById('ai_spots_input').value = data.spots;
+                    document.getElementById('ai_findings_json_input').value = JSON.stringify(data.findings || []);
+
+                    const list = document.getElementById('results-list');
+                    list.innerHTML = '';
+
+                    const iconMap = { "Pimples / Acne": "🔴", "Oiliness": "💧", "Dark Spots / Hyperpigmentation": "🟤", "Dryness / Flakiness": "🍂", "Redness / Irritation": "🥀", "Visible Pores": "🔍", "Skin Texture": "🧱", "Under-eye Circles": "👁️" };
+
+                    let priorityFindings = [];
+                    let otherFindings = [];
+                    let score = data.overall_score || 80;
+
+                    // Create hidden inputs for the new API properties
+                    let hiddenHtml = `<input type="hidden" name="skin_tone" value="${data.skin_tone || 'Unknown'}">
+                                      <input type="hidden" name="estimated_age" value="${data.estimated_age || ''}">
+                                      <input type="hidden" name="ai_overall_score" value="${score}">`;
+                    list.innerHTML += hiddenHtml;
+
+                    // 1. Stats Row
+                    let statsHtml = `<div class="ai-stats-row" style="display:flex;gap:15px;margin-bottom:20px;">
+                        <div class="ai-stat-card" style="flex:1;" title="Your overall skin tone based on the Fitzpatrick scale">
+                            <div style="font-size:12px;color:var(--text-sub)">Skin Tone <span class="info-tooltip" data-tip="Fitzpatrick scale estimation of melanin content">ℹ️</span></div>
+                            <div class="ai-stat-val">${data.skin_tone || 'N/A'}</div>
+                        </div>
+                        <div class="ai-stat-card" style="flex:1;" title="The AI's estimate of your skin age based on visible signs of aging">
+                            <div style="font-size:12px;color:var(--text-sub)">Estimated Age <span class="info-tooltip" data-tip="Visible age estimation via skin elasticity and fine lines">ℹ️</span></div>
+                            <div class="ai-stat-val">${data.estimated_age || 'N/A'}</div>
+                        </div>
+                        <div class="ai-stat-card" style="flex:1;" title="How confident the AI is in its overall assessment of your facial image">
+                            <div style="font-size:12px;color:var(--text-sub)">AI Confidence <span class="info-tooltip" data-tip="How certain the AI is about its findings. Above 85% is considered highly reliable">ℹ️</span></div>
+                            <div class="ai-stat-val" style="color:#16a34a">${score}%</div>
+                        </div>
+                    </div>`;
+                    list.innerHTML += statsHtml;
+
+                    const tipMap = {
+                        "Pimples / Acne": "Inflammatory skin condition caused by clogged pores. AI scans for active lesions and redness",
+                        "Oiliness": "Measures sebum production. Balanced is ideal — too much clogs pores, too little causes dryness",
+                        "Dark Spots / Hyperpigmentation": "Post-inflammatory hyperpigmentation or sun damage. Appears as areas darker than surrounding skin",
+                        "Visible Pores": "Enlarged pores are often caused by excess sebum and loss of skin elasticity",
+                        "Skin Texture": "Smooth texture indicates healthy cell turnover. Rough texture may indicate buildup or dryness",
+                        "Under-eye Circles": "Can be caused by poor sleep, dehydration, or genetic pigmentation"
+                    };
+                    let issuesList = [];
+                    const findings = data.findings || [];
+                    findings.forEach(f => {
+                        let s = f.severity.toLowerCase();
+                        let sevClass = "sev-green";
+                        if (s.includes("moderate") || s.includes("mild")) sevClass = "sev-orange";
+                        if (s.includes("severe") || s.includes("high") || s.includes("rough") || s.includes("large") || s.includes("signs present")) sevClass = "sev-red";
+                        if (s.includes("small") || s.includes("balanced") || s.includes("slightly")) sevClass = "sev-yellow";
+                        if (s.includes("not detected") || s === "smooth" || s === "low") sevClass = "sev-green";
+
+                        // dash offset calculation
+                        let offset = 100 - f.confidence;
+
+                        if(sevClass !== 'sev-green') issuesList.push(`${f.severity.toLowerCase()} ${f.condition.toLowerCase()}`);
+                        let html = `
+                        <div class="ai-result-item ${sevClass !== 'sev-green' ? 'priority' : ''}" style="width:100%; /* mobile full width */">
+                            <div style="font-size:24px">${iconMap[f.condition] || '✨'}</div>
+                            <div style="flex:1;">
+                              <strong style="color:var(--text); display:flex; align-items:center; gap:5px; flex-wrap:wrap;">
+                                ${f.condition}
+                                <span class="info-tooltip" data-tip="${tipMap[f.condition] || ''}">ℹ️</span>
+                              </strong>
+                              <span class="sev-badge ${sevClass}">${f.severity}</span>
+                            </div>
+                            <div class="progress-ring">
+                                <svg width="44" height="44" viewBox="0 0 44 44">
+                                    <circle class="bg" cx="22" cy="22" r="16" />
+                                    <circle class="fg" cx="22" cy="22" r="16" style="stroke-dashoffset: ${offset};" />
+                                </svg>
+                                <div class="progress-text">${f.confidence}%</div>
+                            </div>
+                        </div>`;
+
+                        if (sevClass !== 'sev-green') priorityFindings.push(html);
+                        else otherFindings.push(html);
+                    });
+
+                    if (priorityFindings.length > 0) {
+                        list.innerHTML += `<h3 style="margin:20px 0 10px; font-size:16px; color:var(--text);">🔥 Priority Concerns</h3>`;
+                        priorityFindings.forEach(h => list.innerHTML += h);
+                    }
+                    if (otherFindings.length > 0) {
+                        list.innerHTML += `<h3 style="margin:20px 0 10px; font-size:16px; color:var(--text); opacity:0.8">✅ Good / Balanced</h3>`;
+                        otherFindings.forEach(h => list.innerHTML += h);
+                    }
+                    
+                    let summText = "";
+                    if(issuesList.length > 0) {
+                        summText = `Your skin shows ${issuesList.join(' and ')}`;
+                    } else {
+                        summText = `looks generally clear and balanced`;
+                    }
+                    list.innerHTML += `<div class="ai-summary-card">🤖 <b>AI Summary:</b> ${summText}, likely related to your overall environment and skin type. With consistent care, these concerns are very manageable.</div>`;
+                    
+                    // --- AUTO-FILL QUESTIONNAIRE ---
+                    try {
+                        // 1. Fill Age
+                        if (data.estimated_age) {
+                            let ageMatch = String(data.estimated_age).match(/\d+/);
+                            if (ageMatch) {
+                                let ageInput = document.querySelector('input[name="age"]');
+                                // Only auto-fill if user hasn't typed anything
+                                if (ageInput && !ageInput.value) {
+                                    ageInput.value = ageMatch[0];
+                                }
+                            }
+                        }
+
+                        // 2. Fill Skin Type based on findings
+                        let isOily = false;
+                        let isDry = false;
+                        let isSensitive = false;
+                        findings.forEach(f => {
+                            let s = f.severity.toLowerCase();
+                            if (f.condition === "Oiliness" && (s.includes("high") || s.includes("severe") || s.includes("moderate"))) isOily = true;
+                            if (f.condition === "Dryness / Flakiness" && (s.includes("high") || s.includes("severe") || s.includes("moderate") || s.includes("visible"))) isDry = true;
+                            if (f.condition === "Redness / Irritation" && (s.includes("high") || s.includes("severe") || s.includes("moderate"))) isSensitive = true;
+                        });
+                        
+                        let prepSkinType = "";
+                        if (isSensitive && !isOily && !isDry) prepSkinType = "Sensitive";
+                        else if (isOily && isDry) prepSkinType = "Combination";
+                        else if (isOily) prepSkinType = "Oily";
+                        else if (isDry) prepSkinType = "Dry";
+                        else prepSkinType = "Normal";
+
+                        let stSelect = document.querySelector('select[name="skin_type"]');
+                        if (stSelect && stSelect.value === "") { 
+                            stSelect.value = prepSkinType;
+                            document.getElementById('skin_type_input').value = prepSkinType;
+                        }
+
+                        // 3. Fill Concerns
+                        const aiMappedConcerns = new Set();
+                        findings.forEach(f => {
+                            let s = f.severity.toLowerCase();
+                            if (s.includes("severe") || s.includes("high") || s.includes("moderate") || s.includes("visible") || s.includes("rough") || s.includes("large")) {
+                                if (f.condition.includes("Acne") || f.condition.includes("Pimple")) aiMappedConcerns.add("Acne / Pimples");
+                                if (f.condition.includes("Dark Spots") || f.condition.includes("Hyperpigmentation")) aiMappedConcerns.add("Dark Spots");
+                                if (f.condition.includes("Pigmentation")) aiMappedConcerns.add("Pigmentation");
+                                if (f.condition.includes("Wrinkles") || f.condition.includes("Lines")) aiMappedConcerns.add("Wrinkles");
+                                if (f.condition.includes("Redness")) aiMappedConcerns.add("Redness");
+                            }
+                        });
+
+                        document.querySelectorAll('.concern-card').forEach(card => {
+                            let attr = card.getAttribute('onclick');
+                            aiMappedConcerns.forEach(c => {
+                                if (attr && attr.includes(`'${c}'`) && !card.classList.contains('selected')) {
+                                    toggleConcernCard(card, c);
+                                }
+                            });
+                        });
+                    } catch (e) {
+                        console.error("Auto-fill error:", e);
+                    }
+                    // --- END AUTO-FILL ---
+
+                    // Populate adaptive questions
+                    const adaptiveDiv = document.getElementById('adaptive-content');
+                    adaptiveDiv.innerHTML = '';
+                    let adaptiveCount = 0;
+                    if (data.pimples) {
+                        adaptiveDiv.innerHTML += `
+                            <div class="sa-form-group">
+                                <label>What type of acne do you mostly get?</label>
+                                <select name="acne_type" class="sa-select">
+                                    <option value="Whiteheads/Blackheads">Whiteheads / Blackheads</option>
+                                    <option value="Cystic">Deep painful bumps (Cystic)</option>
+                                    <option value="Occasional">Occasional breakouts</option>
+                                </select>
+                            </div>`;
+                        adaptiveCount++;
+                    }
+                    if (data.spots) {
+                        adaptiveDiv.innerHTML += `
+                            <div class="sa-form-group">
+                                <label>Are the dark spots mostly from sun or past acne?</label>
+                                <select name="spot_type" class="sa-select">
+                                    <option value="Post-acne marks">Post-acne marks</option>
+                                    <option value="Sun exposure / Melasma">Sun exposure / Melasma</option>
+                                </select>
+                            </div>`;
+                        adaptiveCount++;
+                    }
+                    if (data.oily) {
+                        adaptiveDiv.innerHTML += `
+                            <div class="sa-form-group">
+                                <label>When does your skin feel most oily?</label>
+                                <select name="oiliness_time" class="sa-select">
+                                    <option value="Morning">Only in the morning</option>
+                                    <option value="All day">Constantly throughout the day</option>
+                                </select>
+                            </div>`;
+                        adaptiveCount++;
+                    }
+                    window.hasAdaptive = adaptiveCount > 0;
+
+                }, 800);
+            })
+            .catch((e) => { console.error(e); alert("AI Analysis failed. Please try again."); clearInterval(simInterval); showStep('step-upload'); });
+    }
+    // ── Concern Card Selection ──
+    const selectedConcernsSet = new Set();
+
+    function toggleConcernCard(el, concern) {
+        if (selectedConcernsSet.has(concern)) {
+            selectedConcernsSet.delete(concern);
+            el.classList.remove('selected');
+        } else {
+            selectedConcernsSet.add(concern);
+            el.classList.add('selected');
+        }
+        // Rebuild hidden inputs so the form submits all selected concerns
+        const container = document.getElementById('concern-checkboxes');
+        container.innerHTML = '';
+        selectedConcernsSet.forEach(val => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'concerns';
+            input.value = val;
+            container.appendChild(input);
+        });
+    }
+
+    // Legacy stubs
+    function goToConcerns() { }
+    function toggleConcern(el, concern) { }
+
+    let currentQStep = 1;
+    function getQStepsSequence() { return window.hasAdaptive ? [1, 2, 'adaptive', 3] : [1, 2, 3]; }
+
+    function nextQStep(step) {
+        let seq = getQStepsSequence();
+        let idx = seq.indexOf(step);
+        if (idx < seq.length - 1) switchQStep(seq[idx + 1]);
+    }
+
+    function prevQStep(step) {
+        let seq = getQStepsSequence();
+        let idx = seq.indexOf(step);
+        if (idx > 0) switchQStep(seq[idx - 1]);
+        else showStep('step-ai');
+    }
+
+    function switchQStep(target) {
+        document.querySelectorAll('.form-step').forEach(el => el.classList.remove('active'));
+        document.getElementById('qs-' + target).classList.add('active');
+        let seq = getQStepsSequence();
+        let currentIdx = seq.indexOf(target);
+        document.getElementById('q-progress-text').innerText = '(' + (currentIdx + 1) + '/' + seq.length + ')';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+</script>
+{% endblock %}

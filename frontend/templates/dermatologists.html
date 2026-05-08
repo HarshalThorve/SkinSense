@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}SkinSense | Dermatologists{% endblock %}
+
+{% block content %}
+<div class="derma-page" style="padding-top:60px;padding-bottom:80px;">
+
+    <div class="section-label">Expert Care</div>
+    <h1
+        style="font-family:'Playfair Display',serif;font-size:2rem;color:var(--text);margin-bottom:8px;text-align:center;">
+        Connect with <em style="font-style:italic;color:var(--mauve);">Skin Experts</em>
+    </h1>
+    <p style="color:var(--text-mid);text-align:center;margin-bottom:48px;">Verified dermatologists and trusted social
+        media skin specialists.</p>
+
+    <div class="derma-grid">
+
+        <!-- LEFT: TOP DERMATOLOGISTS -->
+        <div class="derma-panel">
+            <h2>Top Dermatologists 👩‍⚕️</h2>
+            <p>Verified skin specialists for appointments</p>
+
+            {% for d in clinical %}
+            <div class="derm-card">
+                <h3>{{ d.name }}</h3>
+                <div class="derm-location">📍 {{ d.city }} · {{ d.hospital }}</div>
+                <div class="derm-spec">🩺 {{ d.specialization }}</div>
+                <div class="derm-contact">📞 {{ d.contact }}</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- RIGHT: SOCIAL MEDIA DERMATOLOGISTS -->
+        <div class="derma-panel">
+            <h2>Social Media Experts 🌐</h2>
+            <p>Follow for daily skincare tips &amp; myth-busting</p>
+
+            {% for s in social %}
+            <div class="social-card">
+                <h4>{{ s.name }}</h4>
+                <p>{{ s.bio }}</p>
+                <div class="doctor-socials">
+                    <a href="{{ s.link }}" target="_blank" class="social-follow-btn">
+                        📲 Follow on {{ s.platform }}
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+    <a href="{{ url_for('main.dashboard') }}" class="nr-back">⬅ Back to Dashboard</a>
+
+</div>
+{% endblock %}

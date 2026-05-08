@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+
+{% block title %}SkinSense | Ingredient Scanner{% endblock %}
+
+{% block styles %}
+<style>
+    .is-page {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+    }
+
+    .ing-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .ing-card-name {
+        color: var(--text);
+        font-size: 1.0rem;
+        font-family: 'DM Sans', sans-serif;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        flex: 1;
+        min-width: 0;
+        word-break: break-word;
+    }
+
+    .ing-badge {
+        flex-shrink: 0;
+        padding: 4px 12px;
+        border-radius: 100px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .ing-badge-safe {
+        background: rgba(107, 203, 119, 0.15);
+        color: #3d8b44;
+    }
+
+    .ing-badge-caution {
+        background: rgba(251, 191, 36, 0.15);
+        color: #b45309;
+    }
+
+    .ing-badge-avoid {
+        background: rgba(248, 113, 113, 0.15);
+        color: #b91c1c;
+    }
+
+    .ing-badge-unknown {
+        background: rgba(150, 150, 150, 0.15);
+        color: var(--text-mid);
+    }
+
+    .suitability-banner {
+        margin-top: 22px;
+        border-radius: 16px;
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border: 1.5px solid;
+    }
+
+    .suitability-banner.suitable {
+        background: rgba(107, 203, 119, 0.12);
+        color: #2d7a35;
+        border-color: rgba(107, 203, 119, 0.4);
+    }
+
+    .suitability-banner.not-suitable {
+        background: rgba(251, 191, 36, 0.12);
+        color: #92400e;
+        border-color: rgba(251, 191, 36, 0.4);
+    }
+
+    .suitability-banner-icon {
+        font-size: 1.3rem;
+        line-height: 1;
+        flex-shrink: 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="is-page">
+    <div class="is-split">
+
+        <!-- LEFT: FORM PANEL -->
+        <div class="is-form-panel">
+            <h2>Ingredient Scanner 📸</h2>
+            <p>Check if your products are safe for you.</p>
+
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div style="margin-bottom:16px;">
+                {% for message in messages %}
+                <div class="flash">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <form method="POST" enctype="multipart/form-data">
+
+                <!-- Skin Type Card Picker -->
+                <div style="margin-bottom:20px;">
+                    <label class="is-label">What's your skin type?</label>
+                    <div class="st-grid">
+                        <div class="st-card" onclick="selectSkinType(this,'Oily')">
+                            <span class="st-card-icon">💧</span>
+                            <div class="st-card-info"><strong>Oily</strong><span>Shiny, enlarged pores, prone to
+                                    breakouts</span></div>
+                        </div>
+                        <div class="st-card" onclick="selectSkinType(this,'Dry')">
+                            <span class="st-card-icon">🌿</span>
+                            <div class="st-card-info"><strong>Dry</strong><span>Tight, flaky, rough texture</span></div>
+                        </div>
+                        <div class="st-card" onclick="selectSkinType(this,'Combination')">
+                            <span class="st-card-icon">✳️</span>
+                            <div class="st-card-info"><strong>Combination</strong><span>Oily T-zone, dry cheeks</span>
+                            </div>
+                        </div>
+                        <div class="st-card" onclick="selectSkinType(this,'Normal')">
+                            <span class="st-card-icon">✨</span>
+                            <div class="st-card-info"><strong>Normal</strong><span>Balanced, few imperfections</span>
+                            </div>
+                        </div>
+                        <div class="st-card" onclick="selectSkinType(this,'Sensitive')" style="grid-column:1/-1;">
+                            <span class="st-card-icon">🌸</span>
+                            <div class="st-card-info"><strong>Sensitive</strong><span>Easily irritated,
+                                    redness-prone</span></div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="skin_type" id="skin_type_input" required>
+                </div>
+
+                <!-- Upload Image -->
+                <div style="margin-bottom:20px;">
+                    <label class="is-label">Upload Label Image</label>
+                    <input type="file" name="image" id="image-input" class="is-file-input" accept="image/*" required>
+                    <label for="image-input" class="is-file-label" id="file-label">
+                        <span class="file-icon">📁</span>
+                        <span class="file-text" id="file-name-display">Click to choose an image...</span>
+                    </label>
+                </div>
+
+                <div id="preview-container">
+                    <img id="preview-image" src="" alt="Preview">
+                </div>
+
+                <button type="submit" class="submit-btn" style="margin-top:20px;">Scan Ingredients</button>
+            </form>
+
+            <!-- Scan Results -->
+            {% if scan_results %}
+            <div class="is-result" style="margin-top:20px; text-align:left;">
+                <div style="text-align:center; margin-bottom: 24px;">
+                    {% if scan_results.status == 'success' %}
+                    <span
+                        style="font-size: 1.1rem; padding: 10px 22px; display:inline-block; border-radius: 100px; background: rgba(107,203,119,0.15); color: #3d8b44; font-weight: bold; border: 1px solid rgba(107,203,119,0.3);">{{
+                        scan_results.summary }}</span>
+                    {% elif scan_results.status == 'warning' %}
+                    <span
+                        style="font-size: 1.1rem; padding: 10px 22px; display:inline-block; border-radius: 100px; background: rgba(251,191,36,0.15); color: #b45309; font-weight: bold; border: 1px solid rgba(251,191,36,0.3);">{{
+                        scan_results.summary }}</span>
+                    {% else %}
+                    <span
+                        style="font-size: 1.1rem; padding: 10px 22px; display:inline-block; border-radius: 100px; background: rgba(248,113,113,0.15); color: #b91c1c; font-weight: bold; border: 1px solid rgba(248,113,113,0.3);">{{
+                        scan_results.summary }}</span>
+                    {% endif %}
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                    {% for item in scan_results.parsed_items %}
+                    <div
+                        style="background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 8px;">
+
+                        <div class="ing-card-header">
+                            <span class="ing-card-name">{{ item.name | upper }}</span>
+                            {% if item.status == 'Safe' %}
+                            <span class="ing-badge ing-badge-safe">Safe ✅</span>
+                            {% elif item.status == 'Caution' %}
+                            <span class="ing-badge ing-badge-caution">Caution ⚠️</span>
+                            {% elif item.status == 'Avoid' %}
+                            <span class="ing-badge ing-badge-avoid">Avoid ❌</span>
+                            {% else %}
+                            <span class="ing-badge ing-badge-unknown">Unknown ❓</span>
+                            {% endif %}
+                        </div>
+
+                        <div style="color: var(--text-mid); font-size: 0.88rem; line-height: 1.5;">
+                            {{ item.reason }}
+                        </div>
+
+                        {% if item.skinTypeCompatibility %}
+                        <div
+                            style="color: #3d8b44; font-size: 0.8rem; font-weight: 500; display: flex; align-items: center; gap: 5px;">
+                            ✓ Good for your skin type
+                        </div>
+                        {% else %}
+                        <div
+                            style="color: #b91c1c; font-size: 0.8rem; font-weight: 500; display: flex; align-items: center; gap: 5px;">
+                            ✗ Not ideal for your skin type
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Final Product Suitability Banner -->
+                {% if scan_results.suitable_msg %}
+                <div class="suitability-banner {{ 'suitable' if scan_results.skin_suitable else 'not-suitable' }}">
+                    <div class="suitability-banner-icon">{{ '✅' if scan_results.skin_suitable else '⚠️' }}</div>
+                    <div>
+                        <div
+                            style="font-size: 0.72rem; font-weight: 500; opacity: 0.65; margin-bottom: 3px; letter-spacing: 0.04em;">
+                            OVERALL VERDICT FOR {{ scan_results.skin_type | upper }} SKIN</div>
+                        <div>{{ 'This product is suitable for your skin type' if scan_results.skin_suitable else 'This
+                            product may not be ideal for your skin type' }}</div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div style="text-align: center; margin-top: 20px;">
+                    {% if scan_results.mode == 'ai' %}
+                    <span
+                        style="display:inline-block; padding: 6px 14px; border-radius: 100px; background: rgba(107,203,119,0.15); color: #3d8b44; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(107,203,119,0.3);">✨
+                        Analyzed using AI</span>
+                    {% else %}
+                    <span
+                        style="display:inline-block; padding: 6px 14px; border-radius: 100px; background: var(--surface2); color: var(--text-mid); font-size: 0.8rem; font-weight: 600; border: 1px solid var(--border);">📦
+                        Analyzed using offline database</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <a href="{{ url_for('main.dashboard') }}" class="is-back">⬅ Back to Dashboard</a>
+        </div>
+
+        <!-- RIGHT: VISUAL PANEL -->
+        <div class="is-visual-panel">
+            <img src="{{ url_for('static', filename='images/ing_scan.jpg') }}" alt="Ingredient Scan">
+            <h3>Upload Ingredient Label</h3>
+            <p>Snap a picture of the ingredients list on the back of any product.</p>
+        </div>
+
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    const imageInput = document.getElementById('image-input');
+    const fileNameDisplay = document.getElementById('file-name-display');
+    const previewContainer = document.getElementById('preview-container');
+    const previewImage = document.getElementById('preview-image');
+
+    imageInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+            fileNameDisplay.textContent = file.name;
+            const reader = new FileReader();
+            reader.onload = e => { previewImage.src = e.target.result; previewContainer.style.display = 'block'; };
+            reader.readAsDataURL(file);
+        } else {
+            fileNameDisplay.textContent = 'Click to choose an image...';
+            previewContainer.style.display = 'none';
+        }
+    });
+
+    function selectSkinType(el, type) {
+        document.querySelectorAll('.st-card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('skin_type_input').value = type;
+    }
+</script>
+{% endblock %}
+
+{% endblock %}

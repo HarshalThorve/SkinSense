@@ -1,0 +1,975 @@
+{% extends "base.html" %}
+
+{% block title %}Skin Sense | Your Report{% endblock %}
+
+{% block styles %}
+<style>
+    /* ====== PAGE ====== */
+    .report-page {
+        min-height: 100vh;
+        background: var(--bg);
+        padding: 32px 24px 80px;
+    }
+
+
+
+    /* ====== STEP INDICATOR (all done) ====== */
+    .step-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 28px;
+    }
+
+    .step-indicator-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .step-num-done {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #a855f7, #ec4899);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .step-label-text {
+        font-size: 13px;
+        font-weight: 600;
+        color: #6b7280;
+        white-space: nowrap;
+    }
+
+    [data-theme="dark"] .step-label-text {
+        color: #94a3b8;
+    }
+
+    .step-label-text.last {
+        color: #374151;
+    }
+
+    [data-theme="dark"] .step-label-text.last {
+        color: #e2e8f0;
+    }
+
+    .step-connector-done {
+        width: 60px;
+        height: 2px;
+        margin: 0 8px;
+        flex-shrink: 0;
+        background: linear-gradient(90deg, #a855f7, #ec4899);
+    }
+
+    /* ====== REPORT CARD ====== */
+    .rpt-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: 20px;
+        padding: 28px 32px;
+        max-width: 740px;
+        margin: 0 auto 20px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        animation: fadeUp 0.5s ease both;
+    }
+
+    [data-theme="dark"] .rpt-card {
+        background: var(--surface);
+        border-color: var(--border);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .rpt-card:nth-child(2) {
+        animation-delay: 0.1s;
+    }
+
+    .rpt-card:nth-child(3) {
+        animation-delay: 0.2s;
+    }
+
+    .rpt-card:nth-child(4) {
+        animation-delay: 0.3s;
+    }
+
+    .rpt-card:nth-child(5) {
+        animation-delay: 0.4s;
+    }
+
+    .rpt-card-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+
+
+    .rpt-card p {
+        color: var(--text-mid);
+        font-size: 14px;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+
+
+    /* Result badge */
+    .result-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 15px;
+        margin-top: 10px;
+    }
+
+    .badge-good {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .badge-avg {
+        background: #fef9c3;
+        color: #a16207;
+    }
+
+    .badge-attn {
+        background: #ffedd5;
+        color: #c2410c;
+    }
+
+    .badge-care {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    [data-theme="dark"] .badge-good {
+        background: rgba(34, 197, 94, 0.15);
+        color: #4ade80;
+    }
+
+    [data-theme="dark"] .badge-avg {
+        background: rgba(234, 179, 8, 0.15);
+        color: #facc15;
+    }
+
+    [data-theme="dark"] .badge-attn {
+        background: rgba(249, 115, 22, 0.15);
+        color: #fb923c;
+    }
+
+    [data-theme="dark"] .badge-care {
+        background: rgba(239, 68, 68, 0.15);
+        color: #f87171;
+    }
+
+    /* Face thumbnail */
+    .face-thumb {
+        width: 90px;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #a855f7;
+        margin: 0 auto 12px;
+        display: block;
+    }
+
+    /* AI findings grid */
+    .ai-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 4px;
+    }
+
+    .ai-item {
+        padding: 14px;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .ai-item.red {
+        background: #fff5f5;
+        border: 1px solid #fecaca;
+    }
+
+    .ai-item.grn {
+        background: #f0fff4;
+        border: 1px solid #bbf7d0;
+    }
+
+    [data-theme="dark"] .ai-item.red {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.25);
+    }
+
+    [data-theme="dark"] .ai-item.grn {
+        background: rgba(34, 197, 94, 0.1);
+        border-color: rgba(34, 197, 94, 0.25);
+    }
+
+    .ai-item .ai-icon {
+        font-size: 22px;
+        margin-bottom: 6px;
+    }
+
+    .ai-item strong {
+        display: block;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .ai-item.red strong {
+        color: #ef4444;
+    }
+
+    .ai-item.grn strong {
+        color: #16a34a;
+    }
+
+    [data-theme="dark"] .ai-item.red strong {
+        color: #f87171;
+    }
+
+    [data-theme="dark"] .ai-item.grn strong {
+        color: #4ade80;
+    }
+
+    .ai-item small {
+        font-size: 12px;
+        color: #9ca3af;
+    }
+
+    /* Routine items */
+    .routine-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 18px;
+    }
+
+    .routine-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .rnum {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #a855f7, #ec4899);
+        color: white;
+        font-size: 13px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .rtext strong {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    [data-theme="dark"] .rtext strong {
+        color: #cbd5e1;
+    }
+
+    .rtext strong span {
+        color: #a855f7;
+    }
+
+    .rtext small {
+        font-size: 13px;
+        color: #9ca3af;
+    }
+
+    /* Routines grid (morning + night) */
+    .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    @media (max-width: 640px) {
+        .two-col {
+            grid-template-columns: 1fr;
+        }
+
+        .ai-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .mini-routine-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+
+
+    .mini-routine-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .mini-routine-list li {
+        font-size: 13px;
+        color: var(--text-mid);
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+
+
+    .mini-routine-list li::before {
+        content: "✔";
+        color: #a855f7;
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+
+    .mini-routine-list.warn li::before {
+        content: "⚠️";
+    }
+
+    .mini-routine-list.leaf li::before {
+        content: "🌿";
+    }
+
+    /* Ingredients grid */
+    .ing-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .ing-item {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px;
+    }
+
+
+
+    .ing-item strong {
+        display: block;
+        font-size: 14px;
+        color: var(--text);
+        margin-bottom: 3px;
+    }
+
+
+
+    .ing-item span {
+        font-size: 12px;
+        color: #9ca3af;
+    }
+
+    /* Avoid tags */
+    .avoid-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .avoid-tag {
+        background: #fef2f2;
+        color: #ef4444;
+        border: 1px solid #fecaca;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    [data-theme="dark"] .avoid-tag {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.3);
+        color: #f87171;
+    }
+
+    /* Action buttons */
+    .report-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 740px;
+        margin: 28px auto 0;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .btn-dash {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 22px;
+        border-radius: 10px;
+        border: 2px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        font-family: inherit;
+    }
+
+
+
+    .btn-dash:hover {
+        border-color: #a855f7;
+        color: #a855f7;
+    }
+
+    .btn-pdf {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 22px;
+        border-radius: 10px;
+        border: none;
+        background: linear-gradient(135deg, #a855f7, #ec4899);
+        color: white;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        box-shadow: 0 4px 14px rgba(168, 85, 247, 0.3);
+        font-family: inherit;
+    }
+
+    .btn-pdf:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+    }
+
+    /* MOBILE RESPONSIVENESS */
+    @media (max-width: 600px) {
+        .profile-stats-grid-2x2 { grid-template-columns: 1fr !important; }
+        .two-col { grid-template-columns: 1fr !important; }
+        .report-actions { flex-direction: column; }
+        .report-actions > div { display: grid !important; grid-template-columns: 1fr 1fr; width: 100%; }
+        .btn-dash, .btn-pdf { width: 100%; padding: 12px; font-size: 13px; margin: 0; text-align: center; }
+        .rpt-card { padding: 16px !important; }
+        body { font-size: 14px; }
+    }
+    
+    /* ENTRANCE ANIMATIONS */
+    .scroll-animate { opacity: 0; transform: translateY(20px); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+    .scroll-animate.visible { opacity: 1; transform: translateY(0); }
+    
+    /* MODAL */
+    .share-modal {
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6);
+        z-index: 10000; display: flex; align-items: center; justify-content: center;
+        opacity: 0; pointer-events: none; transition: 0.3s ease;
+    }
+    .share-modal.active { opacity: 1; pointer-events: all; }
+    .share-modal-content {
+        background: var(--surface); padding: 24px; border-radius: 16px; border: 1px solid var(--border);
+        width: 90%; max-width: 350px; text-align: center; transform: scale(0.9); transition: 0.3s ease;
+    }
+    .share-modal.active .share-modal-content { transform: scale(1); }
+    .share-btn {
+        display: block; width: 100%; padding: 12px; margin: 8px 0; background: var(--surface2);
+        border: 1px solid var(--border); color: var(--text); border-radius: 8px; cursor: pointer;
+        font-weight: 600; text-decoration: none;
+    }
+    .share-btn:hover { background: rgba(168,85,247,0.1); border-color: #a855f7; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="report-page">
+
+    <!-- Step indicator: all complete -->
+    <div class="step-indicator">
+        <div class="step-indicator-item">
+            <div class="step-num-done">✓</div>
+            <span class="step-label-text">Skin Type</span>
+        </div>
+        <div class="step-connector-done"></div>
+        <div class="step-indicator-item">
+            <div class="step-num-done">✓</div>
+            <span class="step-label-text">Concerns</span>
+        </div>
+        <div class="step-connector-done"></div>
+        <div class="step-indicator-item">
+            <div class="step-num-done">3</div>
+            <span class="step-label-text last">Your Report</span>
+        </div>
+    </div>
+
+    <!-- ① Personalized Report Header -->
+    <div class="rpt-card scroll-animate" style="text-align:center;">
+        {% if image_path %}
+        <img src="{{ url_for('static', filename='uploads/' + image_path) }}" class="face-thumb" alt="Your photo">
+        {% endif %}
+        <div class="rpt-card-title" style="justify-content:center;">✦ Your Skin Profile Summary</div>
+
+        <div class="profile-stats-grid-2x2"
+            style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
+            <div class="profile-card-new"
+                style="background: var(--surface); position: relative; border-radius: 16px; padding: 16px 20px; text-align: left; background-clip: padding-box; border: 2px solid transparent;">
+                <div
+                    style="content: ''; position: absolute; inset: -2px; border-radius: 18px; z-index: -1; background: linear-gradient(135deg, rgba(168,85,247,0.4), rgba(236,72,153,0.4));">
+                </div>
+                <div
+                    style="font-size: 13px; color: var(--text-mid); margin-bottom: 6px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                    🧴 Skin Type</div>
+                <div style="font-size: 18px; color: var(--text); font-weight: 800;">{{ data.skin_type }}</div>
+            </div>
+            <div class="profile-card-new"
+                style="background: var(--surface); position: relative; border-radius: 16px; padding: 16px 20px; text-align: left; background-clip: padding-box; border: 2px solid transparent;">
+                <div
+                    style="content: ''; position: absolute; inset: -2px; border-radius: 18px; z-index: -1; background: linear-gradient(135deg, rgba(168,85,247,0.4), rgba(236,72,153,0.4));">
+                </div>
+                <div
+                    style="font-size: 13px; color: var(--text-mid); margin-bottom: 6px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                    🎯 Primary Focus</div>
+                <div style="font-size: 18px; color: var(--text); font-weight: 800;">{{ data.goal }}</div>
+            </div>
+            <div class="profile-card-new"
+                style="background: var(--surface); position: relative; border-radius: 16px; padding: 16px 20px; text-align: left; background-clip: padding-box; border: 2px solid transparent;">
+                <div
+                    style="content: ''; position: absolute; inset: -2px; border-radius: 18px; z-index: -1; background: linear-gradient(135deg, rgba(168,85,247,0.4), rgba(236,72,153,0.4));">
+                </div>
+                <div
+                    style="font-size: 13px; color: var(--text-mid); margin-bottom: 6px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                    🎨 Skin Tone</div>
+                <div style="font-size: 18px; color: var(--text); font-weight: 800;">{{ data.skin_tone }}</div>
+            </div>
+            <div class="profile-card-new"
+                style="background: var(--surface); position: relative; border-radius: 16px; padding: 16px 20px; text-align: left; background-clip: padding-box; border: 2px solid transparent;">
+                <div
+                    style="content: ''; position: absolute; inset: -2px; border-radius: 18px; z-index: -1; background: linear-gradient(135deg, rgba(168,85,247,0.4), rgba(236,72,153,0.4));">
+                </div>
+                <div
+                    style="font-size: 13px; color: var(--text-mid); margin-bottom: 6px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                    📅 Est. Age</div>
+                <div style="font-size: 18px; color: var(--text); font-weight: 800;">{{ data.estimated_age }} yrs</div>
+            </div>
+        </div>
+
+        <div
+            style="margin-top:20px; display:inline-block; padding:20px 30px; background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; min-width: 250px;">
+            <div
+                style="font-size: 13px; color: var(--text-mid); text-transform:uppercase; font-weight:600; letter-spacing:1px; margin-bottom:5px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                Overall Skin Health Score <span title="Score out of 100 based on AI analysis and answers"
+                    style="cursor:help; background:var(--border); padding:2px 6px; border-radius:50%; font-size:10px;">?</span>
+            </div>
+            <div class="score-number" id="animated-score" data-target="{{ score }}"
+                style="font-size: 42px; font-weight: 800; color: {% if score >= 85 %}#16a34a{% elif score >= 60 %}#ca8a04{% else %}#dc2626{% endif %};">
+                0<span style="font-size: 20px; color:var(--text-mid);">/100</span>
+            </div>
+
+            <div
+                style="font-size: 13px; font-weight:600; margin-top:5px; color: {% if first_scan %}var(--text-mid){% elif score > previous_score %}#16a34a{% elif score < previous_score %}#dc2626{% else %}var(--text-mid){% endif %};">
+                {% if first_scan %}
+                Your baseline score
+                {% else %}
+                {% if score > previous_score %}↑ +{{ score - previous_score }} from last scan
+                {% elif score < previous_score %}↓ -{{ previous_score - score }} from last scan {% else %}No change from
+                    last scan{% endif %} {% endif %} </div>
+
+                    <button class="score-breakdown-btn"
+                        onclick="document.getElementById('score-breakdown').classList.toggle('show')"
+                        style="background: none; border: none; color: #a855f7; font-weight: 600; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; margin-top: 10px;">
+                        Why this score? ▾
+                    </button>
+                    <div class="score-breakdown-content" id="score-breakdown"
+                        style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease; text-align: left; margin-top: 10px; padding: 0 10px;">
+                        <style>
+                            .score-breakdown-content.show {
+                                max-height: 500px;
+                            }
+
+                            .breakdown-item {
+                                font-size: 13px;
+                                color: var(--text-mid);
+                                padding: 5px 0;
+                                border-bottom: 1px solid var(--border);
+                            }
+
+                            .breakdown-item:last-child {
+                                border-bottom: none;
+                            }
+                        </style>
+                        {% for item in score_breakdown %}
+                        <div class="breakdown-item">{{ item }}</div>
+                        {% endfor %}
+                    </div>
+            </div>
+
+                        <div style="font-size:12px; color:var(--text-mid); margin-top:20px;">Report generated: {{ current_date }}</div>
+            
+            {% if show_consult_cta %}
+            <div class="rpt-card scroll-animate consult-cta-card" style="background: rgba(217, 119, 6, 0.05); border: 1px solid #d97706; margin-top: 25px; text-align: left;">
+                <div style="font-size: 16px; font-weight: 700; color: #d97706; margin-bottom: 10px;">👨‍⚕️ Professional Consultation Advised</div>
+                <p style="font-size: 14px; margin-bottom: 10px;">Based on your results, we recommend consulting a dermatologist for:</p>
+                <ul style="margin-left: 20px; font-size: 14px; color: var(--text-mid); margin-bottom: 15px;">
+                    {% for reason in consult_reasons %}
+                    <li>{{ reason }}</li>
+                    {% endfor %}
+                </ul>
+                <button class="btn-primary" style="background:#d97706; border:none; color:white; padding:10px 20px; border-radius:8px; cursor:pointer;" onclick="window.open('https://www.google.com/search?q=dermatologist+near+me', '_blank')">Find a Dermatologist →</button>
+            </div>
+            {% endif %}
+
+            {% if warnings and warnings|length > 0 %}
+            <div style="margin-top: 20px; text-align: left;">
+                {% for w in warnings %}
+                {% if w.strip() != '' and w|lower != 'none' %}
+                <div class="report-warning">
+                    <span>⚠️</span>
+                    <div>{{ w }}</div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+
+
+            <div style="margin-top:20px;">
+                <button onclick="toggleEditMode()"
+                    style="background: none; border: none; color: #a855f7; font-weight: 600; font-size: 14px; cursor: pointer; text-decoration: underline;">Edit
+                    Parameters & Photo</button>
+            </div>
+
+            <!-- Inline Edit Form -->
+            <div id="edit-form-panel"
+                style="display:none; text-align:left; margin-top:20px; padding:20px; border:1px solid var(--border); border-radius:12px; background:var(--surface2);">
+                <form method="POST" enctype="multipart/form-data" action="{{ url_for('analysis.skin_analysis') }}">
+                    <div style="margin-bottom:15px;">
+                        <label
+                            style="display:block; font-weight:600; margin-bottom:5px; font-size:14px; color:var(--text);">Update
+                            Photo (Optional)</label>
+                        <input type="file" name="face_image" accept="image/*"
+                            style="width:100%; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); padding: 5px;">
+                    </div>
+                    <div style="margin-bottom:15px;">
+                        <label
+                            style="display:block; font-weight:600; margin-bottom:5px; font-size:14px; color:var(--text);">Correction:
+                            Skin Type</label>
+                        <select name="skin_type"
+                            style="width:100%; padding:10px; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text);">
+                            <option value="Normal" {% if data.skin_type=='Normal' %}selected{% endif %}>Normal</option>
+                            <option value="Oily" {% if data.skin_type=='Oily' %}selected{% endif %}>Oily</option>
+                            <option value="Dry" {% if data.skin_type=='Dry' %}selected{% endif %}>Dry</option>
+                            <option value="Combination" {% if data.skin_type=='Combination' %}selected{% endif %}>
+                                Combination</option>
+                            <option value="Sensitive" {% if data.skin_type=='Sensitive' %}selected{% endif %}>Sensitive
+                            </option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom:15px;">
+                        <label
+                            style="display:block; font-weight:600; margin-bottom:5px; font-size:14px; color:var(--text);">Correction:
+                            Primary Concern</label>
+                        <select name="concern"
+                            style="width:100%; padding:10px; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text);">
+                            <option value="None" {% if data.concern=='None' %}selected{% endif %}>None</option>
+                            <option value="Acne" {% if data.concern=='Acne' %}selected{% endif %}>Acne & Breakouts
+                            </option>
+                            <option value="Pigmentation" {% if data.concern=='Pigmentation' %}selected{% endif %}>
+                                Pigmentation</option>
+                            <option value="Dark Spots" {% if data.concern=='Dark Spots' %}selected{% endif %}>Dark Spots
+                            </option>
+                            <option value="Tanning" {% if data.concern=='Tanning' %}selected{% endif %}>Dryness /
+                                Tanning</option>
+                        </select>
+                    </div>
+                    <!-- Internal logic carries over previous AI detection -->
+                    <input type="hidden" name="ai_pimples" value="{{ 'true' if data.ai_pimples else 'false' }}">
+                    <input type="hidden" name="ai_oily" value="{{ 'true' if data.ai_oily else 'false' }}">
+                    <input type="hidden" name="ai_spots" value="{{ 'true' if data.ai_spots else 'false' }}">
+                    <input type="hidden" name="ai_findings_json" value='{{ ai_results | tojson }}'>
+                    <input type="hidden" name="skin_tone" value='{{ data.skin_tone }}'>
+                    <input type="hidden" name="estimated_age" value='{{ data.estimated_age }}'>
+                    <input type="hidden" name="goal" value='{{ data.goal }}'>
+
+                    <!-- Restore remaining answers -->
+                    <input type="hidden" name="age" value="{{ data.age }}">
+                    <input type="hidden" name="gender" value="{{ data.gender }}">
+                    <input type="hidden" name="climate" value="{{ data.climate }}">
+                    <input type="hidden" name="budget" value="{{ data.budget }}">
+                    <input type="hidden" name="time_spend" value="{{ data.time_spend }}">
+                    <input type="hidden" name="sunscreen" value="{{ data.sunscreen }}">
+                    <input type="hidden" name="sleep" value="{{ data.sleep }}">
+                    <input type="hidden" name="water" value="{{ data.water }}">
+                    <input type="hidden" name="has_allergies"
+                        value="{{ 'Yes' if data.allergies and data.allergies != 'None' else 'No' }}">
+                    <input type="hidden" name="allergies" value="{{ data.allergies }}">
+                    <input type="hidden" name="ai_overall_score" value="{{ score }}">
+
+                    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                        <button type="button" onclick="toggleEditMode()" class="btn-dash"
+                            style="padding:8px 16px;">Cancel</button>
+                        <button type="submit" class="btn-pdf" style="padding:8px 16px;">Apply & Regenerate</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ② AI Vision Findings -->
+        <div class="rpt-card scroll-animate">
+            <div class="rpt-card-title">🤖 AI Vision Findings</div>
+            <div class="ai-grid">
+                {% for finding in ai_results %}
+                {% set s = finding.severity | lower %}
+                {% set is_clear = ('not detected' in s or 'balanced' in s or s == 'smooth' or s == 'low' or s ==
+                'small') %}
+                {% set bg_class = 'clear grn' if is_clear else ('detected red' if ('moderate' in s or 'severe' in s or
+                'high' in s or 'visible' in s or 'rough' in s or 'large' in s or 'signs present' in s) else 'detected
+                ylw') %}
+
+                {% set icon = '✨' %}
+                {% if finding.condition == 'Pimples / Acne' %}{% set icon = '🔴' %}
+                {% elif finding.condition == 'Oiliness' %}{% set icon = '💧' %}
+                {% elif finding.condition == 'Dark Spots / Hyperpigmentation' %}{% set icon = '🟤' %}
+                {% elif finding.condition == 'Dryness / Flakiness' %}{% set icon = '🍂' %}
+                {% elif finding.condition == 'Redness / Irritation' %}{% set icon = '🥀' %}
+                {% elif finding.condition == 'Visible Pores' %}{% set icon = '🔍' %}
+                {% elif finding.condition == 'Skin Texture' %}{% set icon = '🧱' %}
+                {% elif finding.condition == 'Under-eye Circles' %}{% set icon = '👁️' %}
+                {% endif %}
+
+                <div class="ai-item {{ bg_class }}">
+                    <div class="ai-icon">{{ icon }}</div>
+                    <strong>{{ finding.condition }}</strong>
+                    <small
+                        style="color: {{ '#15803d' if is_clear else ('#ef4444' if 'red' in bg_class else '#ca8a04') }}">
+                        Severity: {{ finding.severity }}
+                    </small>
+                    <div style="font-size: 11px; margin-top: 4px; color: var(--text-sub);">
+                        AI Confidence: {{ finding.confidence }}%
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <p style="margin-top:14px;font-size:12px;font-style:italic;">
+                * These results are based on AI image analysis and should be used alongside your skin profile.
+            </p>
+        </div>
+
+        <!-- 🧪 KEY INGREDIENTS MATcHED TO YOUR SKIN -->
+        {% if key_ingredients and key_ingredients|length > 0 %}
+        <div class="rpt-card scroll-animate">
+            <div class="rpt-card-title">🧪 Ingredients Matched to Your Skin</div>
+            <p style="margin-bottom:15px; font-size:13px; color: var(--text-mid);">Look for these in your next product
+                purchase:</p>
+            <div>
+                {% for ing in key_ingredients %}
+                {% if ing.name %}
+                <span class="ing-chip-new"
+                    style="display: inline-block; padding: 8px 16px; border-radius: 20px; background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.3); color: var(--text); font-size: 13px; font-weight: 600; margin: 4px; position: relative; cursor: help;"
+                    onmouseover="this.querySelector('.tooltip-txt').style.visibility='visible'; this.querySelector('.tooltip-txt').style.opacity='1';"
+                    onmouseout="this.querySelector('.tooltip-txt').style.visibility='hidden'; this.querySelector('.tooltip-txt').style.opacity='0';">
+                    {{ ing.name }}
+                    <span class="tooltip-txt"
+                        style="visibility: hidden; width: 220px; background-color: var(--surface2); color: var(--text); text-align: center; border-radius: 8px; padding: 10px; border: 1px solid var(--border); position: absolute; z-index: 99; bottom: 125%; left: 50%; margin-left: -110px; opacity: 0; transition: opacity 0.3s; font-size: 12px; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">{{
+                        ing.desc }}</span>
+                </span>
+                {% else %}
+                <span class="ing-chip-new"
+                    style="display: inline-block; padding: 8px 16px; border-radius: 20px; background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.3); color: var(--text); font-size: 13px; font-weight: 600; margin: 4px;">{{
+                    ing }}</span>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ③ Morning + Night Routine -->
+        <div class="rpt-card scroll-animate">
+            <div class="rpt-card-title">☀️ Daily Skincare Routine</div>
+            <div class="two-col">
+                <div>
+                    <div class="mini-routine-title">☀️ Morning</div>
+                    <ul class="mini-routine-list">
+                        {% for step in routine.morning %}
+                        <li>{{ step }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div>
+                    <div class="mini-routine-title">🌙 Night</div>
+                    <ul class="mini-routine-list">
+                        {% for step in routine.night %}
+                        <li>{{ step }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ④ Precautions + Remedies -->
+        <div class="rpt-card scroll-animate">
+            <div class="two-col">
+                <div>
+                    <div class="mini-routine-title">⚠️ Precautions</div>
+                    <ul class="mini-routine-list warn">
+                        {% for item in routine.precautions %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div>
+                    <div class="mini-routine-title">🌿 Suggested Remedies</div>
+                    <ul class="mini-routine-list leaf">
+                        {% for item in routine.remedies %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ⑤ What to Avoid -->
+        <div class="rpt-card scroll-animate">
+            <div class="rpt-card-title">🚫 What to Avoid</div>
+            <div class="avoid-wrap">
+                {% for item in routine.what_to_avoid %}
+                <span class="avoid-tag">{{ item }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+
+        {% if lifestyle and lifestyle|length > 0 %}
+        <!-- ⑥ Lifestyle Recommendations -->
+        <div class="rpt-card scroll-animate">
+            <div class="rpt-card-title">🌱 Lifestyle Recommendations</div>
+            <ul class="mini-routine-list">
+                {% for tip in lifestyle %}
+                <li style="font-size: 14px; padding: 10px 0;">{{ tip }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- Actions -->
+        <div class="report-actions scroll-animate" style="margin-top:40px;">
+            <a href="{{ url_for('main.dashboard') }}" class="btn-dash">← Dashboard</a>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;" class="mobile-grid">
+                <button class="btn-dash" onclick="window.print()">🖨️ Save PDF</button>
+                <button class="btn-dash" onclick="document.getElementById('shareModal').classList.add('active')">🔗 Share</button>
+                <button class="btn-pdf" onclick="alert('Reminder set for 4 weeks from today!')">📅 Set Reminder</button>
+            </div>
+        </div>
+        
+    <div class="share-modal" id="shareModal">
+        <div class="share-modal-content">
+            <h3 style="margin-bottom:15px; color:var(--text);">Share Report</h3>
+            <button class="share-btn" onclick="navigator.clipboard.writeText('My SkinSense Report: Score {{score}}/100').then(()=>alert('Copied!'))">📋 Copy Link</button>
+            <a class="share-btn" href="https://wa.me/?text=My%20SkinSense%20Report%3A%20Skin%20Score%20{{score}}%2F100%20%7C%20Skin%20Type%3A%20{{data.skin_type}}%20%7C%20Generated%20on%20{{current_date}}" target="_blank">📱 WhatsApp</a>
+            <a class="share-btn" href="mailto:?subject=My SkinSense Report&body=My SkinSense Report: Skin Score {{score}}/100 | Skin Type: {{data.skin_type}} | Generated on {{current_date}}" target="_blank">✉️ Email</a>
+            <button class="share-btn" style="background:#ef4444; color:white; border:none; margin-top:15px;" onclick="document.getElementById('shareModal').classList.remove('active')">Close</button>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        function toggleEditMode() {
+            const panel = document.getElementById('edit-form-panel');
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+            } else {
+                panel.style.display = 'none';
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const scoreEl = document.getElementById("animated-score");
+            if (scoreEl) {
+                const target = parseInt(scoreEl.getAttribute("data-target"), 10);
+                const duration = 1500; // ms
+                const interval = 30; // ms per frame
+                const steps = duration / interval;
+                const increment = target / steps;
+
+                let current = 0;
+                let timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                        scoreEl.style.textShadow = "0 0 15px rgba(168,85,247,0.6)"; // glow pulse on complete
+                    }
+                    scoreEl.innerHTML = Math.floor(current) + '<span style="font-size: 20px; color:var(--text-mid);">/100</span>';
+                }, interval);
+
+                // Add continuous glow animation dynamically
+                setTimeout(() => {
+                    const style = document.createElement('style');
+                    style.innerHTML = `
+                        @keyframes scorePulse {
+                            0% { text-shadow: 0 0 0px rgba(168,85,247,0); }
+                            50% { text-shadow: 0 0 20px rgba(168,85,247,0.8); }
+                            100% { text-shadow: 0 0 10px rgba(168,85,247,0.3); }
+                        }
+                    `;
+                    document.head.appendChild(style);
+                    scoreEl.style.animation = "scorePulse 2s ease-in-out infinite";
+                }, duration);
+            }
+        });
+    
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, idx) => {
+                if(entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, idx * 100);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.scroll-animate').forEach(el => observer.observe(el));
+
+    </script>
+    {% endblock %}

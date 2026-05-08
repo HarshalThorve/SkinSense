@@ -1,0 +1,229 @@
+================================================================================
+              SkinSense – SYSTEM OVERVIEW (For External Explanation)
+================================================================================
+
+PROJECT NAME   : SkinSense
+TYPE           : AI-Powered Skincare Analysis Web Application
+BUILT WITH     : Python (Flask), SQLite, Google Gemini AI, Machine Learning
+PURPOSE        : Help users understand their skin health and get personalized
+                 skincare recommendations using AI image analysis and a
+                 questionnaire.
+
+================================================================================
+  1. WHAT THE SYSTEM DOES (in simple terms)
+================================================================================
+
+A user opens the web app, registers/logs in, uploads a photo of their face,
+fills in a short questionnaire about their skin habits, and within seconds gets:
+
+  - A skin health score (out of 100)
+  - A list of detected skin conditions (acne, oiliness, dark spots, etc.)
+  - A personalized morning + night skincare routine
+  - Lifestyle tips, key ingredients to look for, and things to avoid
+  - A PDF report they can download
+
+The system also has:
+  - Trend Verification  : Check if a DIY skincare trend (e.g., "lemon on face")
+                          is safe or harmful for your skin type.
+  - Ingredient Scanner  : Upload a product label photo; AI reads the ingredients
+                          and tells you if anything is harmful.
+  - History Tracking    : Every skin analysis is saved so users can track their
+                          skin health over time.
+  - Product Browser     : Curated skincare product recommendations with
+                          favourite/filter functionality (stored locally).
+  - Dermatologist Locator: Information on when to consult a professional.
+
+================================================================================
+  2. HOW DATA FLOWS – STEP BY STEP
+================================================================================
+
+STEP 1 – USER OPENS THE APP
+  - The Flask server (app.py) starts and serves the homepage (index.html).
+  - If already logged in, the user is redirected straight to their dashboard.
+
+STEP 2 – REGISTRATION / LOGIN
+  - User fills in name, email, phone, and password on the Register page.
+  - Password is hashed (encrypted) using Werkzeug before being saved.
+  - All user data is stored in a local SQLite database (database.db).
+  - On login, the system checks the hashed password and creates a secure session.
+
+STEP 3 – SKIN ANALYSIS FORM (skin_analysis.html)
+  - The user fills out a multi-step wizard on the Skin Analysis page:
+      a) Age, gender, skin type (Oily / Dry / Combination / Normal / Sensitive)
+      b) Primary skin concerns (Acne, Pigmentation, Dryness, etc.)
+      c) Lifestyle info: sleep hours, daily water intake, climate, budget
+         for products, current sunscreen use, allergies, medications
+      d) Upload a face photo OR use the live camera capture
+
+STEP 4 – AI IMAGE ANALYSIS (via Google Gemini API)
+  - Once the photo is uploaded/captured, the browser immediately sends it to
+    the backend route /api/analyze-image using a background JavaScript fetch.
+  - The backend converts the image to Base64 format and sends it to Google's
+    Gemini 1.5 Flash vision model via a REST API call.
+  - Gemini analyzes the face and returns a JSON response with:
+      * 8 skin conditions detected (Pimples, Oiliness, Dark Spots, Dryness,
+        Redness, Visible Pores, Skin Texture, Under-eye Circles)
+      * Severity for each condition (e.g., Mild / Moderate / Severe)
+      * Confidence percentage for each detection
+      * Skin tone (Fair / Medium / Tan / Deep)
+      * Estimated skin age
+      * An overall AI skin score
+  - This result is shown to the user in real-time on the form (Step 2 of wizard)
+    and also stored in a hidden field as JSON for the final form submission.
+
+STEP 5 – FINAL FORM SUBMISSION (POST to /skin-analysis)
+  - When the user clicks "Generate Report", all data is submitted:
+      * Questionnaire answers (age, skin type, concerns, lifestyle, etc.)
+      * AI findings from Step 4 (passed as hidden JSON field)
+      * The uploaded image filename
+
+STEP 6 – SKIN HEALTH SCORE CALCULATION (Server-side, in app.py)
+  - The backend calculates a numeric skin health score (30–100) using a
+    rule-based algorithm:
+
+    Base Score = 100
+
+    DEDUCTIONS from AI findings:
+      - Severe condition detected  → -20 points
+      - Moderate condition         → -12 points
+      - Mild condition             → -6 points
+      - Visible issue              → -10 points
+
+    DEDUCTIONS from lifestyle questionnaire:
+      - Sleep < 6 hours            → -5 points
+      - Skipping sunscreen         → -10 points
+      - Drinking < 1 litre water   → -5 points
+      - Severe self-reported issue → -8 points
+      - Humid climate              → -5 points
+
+    BONUSES:
+      - Sleep >= 7 hours           → +10 points
+      - Good water intake          → +5 points
+      - Daily sunscreen use        → +5 points
+
+    Final Result:
+      - Score >= 85  → "Good Skin Health"
+      - Score 65–84  → "Average Skin Health"
+      - Score 45–64  → "Needs Attention"
+      - Score < 45   → "Needs Immediate Care"
+
+STEP 7 – PERSONALIZED ROUTINE GENERATION (via Google Gemini API)
+  - The server builds a detailed prompt combining:
+      * User's full skin profile (age, gender, skin type, concerns, lifestyle)
+      * AI image findings (conditions + severities)
+  - This prompt is sent to Gemini 1.5 Flash text model.
+  - Gemini returns a JSON response containing:
+      * Morning routine (step-by-step with timing and reason for each step)
+      * Night routine
+      * Precautions (behavioral habits to follow)
+      * What to Avoid (specific ingredients and products to stay away from)
+      * Home Remedies
+      * Lifestyle tips personalized to the user
+      * Key ingredients to look for when buying products
+  - If Gemini is unavailable, a pre-defined fallback routine (stored in the
+    code as SKIN_ROUTINES dictionary) is used based on skin type.
+  - Additional rule-based adjustments are applied on top:
+      * Acne detected → Add salicylic acid step
+      * Dark spots detected → Add Vitamin C + Alpha Arbutin step
+      * Oily skin + different skin type selected → Add clay mask reminder
+
+STEP 8 – SAVING TO DATABASE
+  - The final report (skin type, score, AI findings, result label, image path,
+    lifestyle answers) is saved in the SkinReport table in SQLite.
+  - This allows the user to view historical reports and track skin progress.
+  - The current report data is also temporarily stored in the Flask session
+    for the PDF download feature.
+
+STEP 9 – REPORT DISPLAY (skin_report.html)
+  - The final report page shows everything:
+      * Skin Health Score with a visual gauge
+      * Score breakdown (what reduced/added points and why)
+      * AI-detected conditions with severity badges
+      * Morning & Night routine cards
+      * Key ingredients section
+      * Lifestyle tips
+      * What to Avoid section
+      * Home Remedies
+      * Progress comparison (vs previous report if any)
+      * "Consult a Dermatologist" CTA if score < 70 or condition is severe
+  - User can download the full report as a PDF.
+
+================================================================================
+  3. OTHER MODULES – HOW THEY WORK
+================================================================================
+
+--- TREND VERIFICATION ---
+  - User types a skincare trend (e.g., "applying garlic on face")
+  - The backend checks the text against two keyword lists:
+      * Harmful keywords: lemon, baking soda, toothpaste, bleach, vinegar, etc.
+      * Safe keywords: aloe vera, rose water, honey, turmeric, green tea, etc.
+  - Returns one of: Harmful Trend / Safe Trend / Use with Caution / Unverified
+  - Result + reason is saved in TrendHistory table in the database.
+
+--- INGREDIENT SCANNER ---
+  - User uploads a photo of a skincare product label.
+  - The image is processed using Tesseract OCR (a local text-recognition tool)
+    which extracts the printed ingredient text from the photo.
+  - Extracted text is then passed to the Gemini AI which analyzes the
+    ingredients and highlights harmful or beneficial ones.
+  - Result summary is saved in IngredientScanHistory table.
+
+--- HISTORY PAGE ---
+  - Fetches all SkinReport, TrendHistory, and IngredientScanHistory records
+    for the currently logged-in user from the SQLite database.
+  - Displays them in a timeline/table with timestamps.
+
+--- PRODUCTS PAGE ---
+  - A static curated list of skincare products shown as interactive cards.
+  - Users can "favourite" products; this preference is saved in the browser's
+    LocalStorage (no server call needed).
+  - A filter button shows only favourited products.
+
+--- PDF REPORT DOWNLOAD ---
+  - When the user clicks "Download PDF", a route reads data from the
+    Flask session and uses the ReportLab library to generate a PDF file
+    in memory and send it as a downloadable file.
+
+================================================================================
+  4. TECHNOLOGY SUMMARY
+================================================================================
+
+  Layer              | Technology Used
+  -------------------|----------------------------------------------
+  Web Framework      | Flask (Python)
+  Database           | SQLite (via Flask-SQLAlchemy ORM)
+  User Auth          | Flask-Login (session-based, hashed passwords)
+  AI Image Analysis  | Google Gemini 1.5 Flash (Vision Model)
+  AI Routine/Report  | Google Gemini 1.5 Flash (Text Model)
+  OCR (Label Scan)   | Tesseract OCR + Pillow (local processing)
+  ML Model           | scikit-learn (skin_model.pkl – pre-trained)
+  PDF Generation     | ReportLab
+  Frontend           | HTML, CSS (glassmorphism dark theme), JavaScript
+  Environment Vars   | python-dotenv (.env file stores API keys)
+
+================================================================================
+  5. DATA STORAGE SUMMARY
+================================================================================
+
+All data is stored locally in a SQLite file: instance/database.db
+
+  Table                  | What it stores
+  -----------------------|--------------------------------------------------
+  user                   | Name, email, hashed password, phone
+  skin_report            | Per-analysis: skin type, score, AI flags, image
+  trend_history          | Each trend check: text, result, timestamp
+  ingredient_scan_history| Each scan: image path, summary, timestamp
+
+================================================================================
+  6. SECURITY & PRIVACY NOTES
+================================================================================
+
+  - Passwords are NEVER stored as plain text; only bcrypt-hashed versions.
+  - Google Gemini API key is stored in a .env file (never in source code).
+  - Only logged-in users can access the analysis, history, and download routes.
+  - Images are saved in a local 'uploads' folder on the server.
+  - No data is shared with third parties (except to Gemini for AI processing).
+
+================================================================================
+  END OF DOCUMENT
+================================================================================
