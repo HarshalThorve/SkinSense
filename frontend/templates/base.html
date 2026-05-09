@@ -5,6 +5,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}SkinSense{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            corePlugins: {
+                preflight: false,
+            }
+        }
+    </script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
@@ -52,16 +60,19 @@
             .mobile-nav-drawer {
                 display: none;
                 position: fixed;
-                top: 60px;
+                top: 56px;
                 left: 0;
                 right: 0;
-                background: var(--bg);
+                background: var(--surface);
                 border-bottom: 1px solid var(--border);
-                padding: 16px;
+                padding: 12px 16px;
                 z-index: 9998;
                 flex-direction: column;
-                gap: 4px;
+                gap: 2px;
                 box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+                backdrop-filter: blur(20px);
+                max-height: calc(100vh - 56px);
+                overflow-y: auto;
             }
 
             .mobile-nav-drawer.open {
@@ -71,21 +82,21 @@
             .mobile-nav-drawer a {
                 display: block;
                 padding: 12px 16px;
-                border-radius: 8px;
+                border-radius: 10px;
                 color: var(--text);
                 text-decoration: none;
                 font-weight: 600;
-                font-size: 15px;
-                transition: background 0.2s;
+                font-size: 0.92rem;
+                transition: background 0.2s, color 0.2s;
             }
 
             .mobile-nav-drawer a:hover,
             .mobile-nav-drawer a.active {
-                background: rgba(168, 85, 247, 0.1);
-                color: #a855f7;
+                background: var(--pill-bg);
+                color: var(--mauve);
             }
 
-            @media (max-width: 700px) {
+            @media (max-width: 768px) {
                 .nav-links {
                     display: none !important;
                 }
@@ -163,9 +174,10 @@
             <a href="{{ url_for('pages.dermatologists') }}"
                 class="{% if request.endpoint == 'pages.dermatologists' %}active{% endif %}">📞 Contact</a>
             {% if current_user.is_authenticated %}
-            <a href="{{ url_for('auth.logout') }}" style="color: #ef4444;">🚪 Logout</a>
+            <a href="{{ url_for('auth.logout') }}" style="color: var(--text);">🚪 Logout</a>
             {% else %}
-            <a href="{{ url_for('auth.login') }}" style="color:#a855f7;">🔑 Login</a>
+            <a href="{{ url_for('auth.login') }}" style="color: var(--mauve);">🔑 Login</a>
+            <a href="{{ url_for('auth.register') }}" style="color: var(--text);">📝 Register</a>
             {% endif %}
         </div>
 

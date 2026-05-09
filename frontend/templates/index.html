@@ -5,132 +5,129 @@
 {% block content %}
 
 <!-- HERO -->
-<section
-  style="min-height:calc(100vh - 64px);display:grid;grid-template-columns:1fr 1fr;align-items:center;overflow:hidden;position:relative;padding:0;">
+<section class="min-h-[calc(100vh-64px)] flex flex-col lg:grid lg:grid-cols-2 items-center overflow-hidden relative p-0">
 
   <!-- Radial blush blob -->
-  <div
-    style="position:absolute;top:-200px;right:-200px;width:720px;height:720px;background:radial-gradient(circle,rgba(240,165,176,0.22) 0%,transparent 68%);pointer-events:none;">
+  <div class="absolute -top-[200px] -right-[200px] w-[720px] h-[720px] pointer-events-none"
+    style="background:radial-gradient(circle,rgba(240,165,176,0.22) 0%,transparent 68%);">
   </div>
-  <div
-    style="position:absolute;bottom:-80px;left:0;width:440px;height:440px;background:radial-gradient(circle,rgba(158,184,158,0.15) 0%,transparent 68%);pointer-events:none;">
+  <div class="absolute -bottom-[80px] left-0 w-[440px] h-[440px] pointer-events-none"
+    style="background:radial-gradient(circle,rgba(158,184,158,0.15) 0%,transparent 68%);">
   </div>
 
   <!-- Left: Text -->
-  <div style="padding:80px 48px 80px 80px;position:relative;z-index:2;">
-    <div
-      style="display:inline-flex;align-items:center;gap:6px;background:var(--pill-bg);border:1px solid rgba(201,136,158,0.25);color:var(--pill-c);padding:6px 16px;border-radius:100px;font-size:0.76rem;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:28px;">
+  <div class="px-6 py-12 md:px-12 lg:py-20 lg:pl-20 lg:pr-12 relative z-10 w-full">
+    <div class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[0.76rem] font-medium tracking-wide uppercase mb-7 border border-[rgba(201,136,158,0.25)]"
+      style="background:var(--pill-bg);color:var(--pill-c);">
       ✦ AI-Powered Skincare
     </div>
 
-    <h1
-      style="font-family:'Playfair Display',serif;font-size:clamp(2.6rem,4.5vw,4.2rem);line-height:1.06;color:var(--text);margin-bottom:22px;">
+    <h1 class="font-['Playfair_Display'] text-[clamp(2.6rem,4.5vw,4.2rem)] leading-[1.06] mb-5"
+      style="color:var(--text);">
       Your skin deserves<br>
-      <em style="font-style:italic;color:var(--mauve);">science-backed</em> care.
+      <em class="italic" style="color:var(--mauve);">science-backed</em> care.
     </h1>
 
-    <p
-      style="font-size:1rem;color:var(--text-mid);line-height:1.75;max-width:400px;margin-bottom:40px;font-weight:300;">
+    <p class="text-base leading-[1.75] max-w-[400px] mb-10 font-light" style="color:var(--text-mid);">
       SkinSense uses advanced ML and dermatological insights to analyze skin conditions, scan ingredients, and verify
       trends — personalized just for you.
     </p>
 
-    <div style="display:flex;gap:14px;align-items:center;">
-      <a href="{{ url_for('auth.register') }}" class="btn-primary" style="text-decoration:none;display:inline-block;">
+    <div class="flex flex-col sm:flex-row gap-4 sm:items-center">
+      <a href="{{ url_for('auth.register') }}" class="btn-primary text-center inline-block no-underline w-full sm:w-auto">
         Get Started →
       </a>
-      <a href="{{ url_for('auth.login') }}" class="btn-ghost" style="text-decoration:none;">
+      <a href="{{ url_for('auth.login') }}" class="btn-ghost text-center no-underline w-full sm:w-auto">
         Already have an account?
       </a>
     </div>
 
     <!-- Stats -->
-    <div style="display:flex;gap:36px;margin-top:52px;">
+    <div class="flex flex-wrap gap-8 sm:gap-10 mt-12">
       <div>
-        <div
-          style="font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--text);line-height:1;">
+        <div class="font-['Playfair_Display'] text-[1.7rem] font-bold leading-none" style="color:var(--text);">
           10K+</div>
-        <div style="font-size:0.75rem;color:var(--text-sub);font-weight:400;letter-spacing:0.03em;margin-top:4px;">Users
+        <div class="text-[0.75rem] font-normal tracking-wide mt-1" style="color:var(--text-sub);">Users
         </div>
       </div>
       <div>
-        <div
-          style="font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--text);line-height:1;">
+        <div class="font-['Playfair_Display'] text-[1.7rem] font-bold leading-none" style="color:var(--text);">
           500+</div>
-        <div style="font-size:0.75rem;color:var(--text-sub);font-weight:400;letter-spacing:0.03em;margin-top:4px;">
+        <div class="text-[0.75rem] font-normal tracking-wide mt-1" style="color:var(--text-sub);">
           Ingredients Tracked</div>
       </div>
       <div>
-        <div
-          style="font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--text);line-height:1;">
+        <div class="font-['Playfair_Display'] text-[1.7rem] font-bold leading-none" style="color:var(--text);">
           98%</div>
-        <div style="font-size:0.75rem;color:var(--text-sub);font-weight:400;letter-spacing:0.03em;margin-top:4px;">
+        <div class="text-[0.75rem] font-normal tracking-wide mt-1" style="color:var(--text-sub);">
           Accuracy</div>
       </div>
     </div>
   </div>
 
   <!-- Right: Images -->
-  <div
-    style="padding:40px 40px 40px 0;display:flex;align-items:center;justify-content:center;min-height:500px;position:relative;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:480px;">
+  <div class="hidden lg:flex p-10 pl-0 items-center justify-center min-h-[500px] relative w-full">
+    <div class="grid grid-cols-2 gap-4 w-full max-w-[480px]">
       <img src="{{ url_for('static', filename='images/ing_scan.jpg') }}" alt="Ingredient Scan"
-        style="grid-column:1/-1;width:100%;height:260px;object-fit:cover;border-radius:20px;box-shadow:0 12px 36px var(--shadow-lg);animation:floatA 6s ease-in-out infinite;">
+        class="col-span-2 w-full h-[260px] object-cover rounded-[20px] shadow-[0_12px_36px_var(--shadow-lg)]"
+        style="animation:floatA 6s ease-in-out infinite;">
       <img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=300&h=300&fit=crop" alt="Skincare"
-        style="width:100%;height:170px;object-fit:cover;border-radius:16px;box-shadow:0 8px 24px var(--shadow);animation:floatB 7s ease-in-out infinite;">
+        class="w-full h-[170px] object-cover rounded-2xl shadow-[0_8px_24px_var(--shadow)]"
+        style="animation:floatB 7s ease-in-out infinite;">
       <img src="{{ url_for('static', filename='images/img1.jpg') }}" alt="Natural Skincare"
-        style="width:100%;height:170px;object-fit:cover;border-radius:16px;box-shadow:0 8px 24px var(--shadow);animation:floatC 5s ease-in-out infinite;">
+        class="w-full h-[170px] object-cover rounded-2xl shadow-[0_8px_24px_var(--shadow)]"
+        style="animation:floatC 5s ease-in-out infinite;">
     </div>
   </div>
 
 </section>
 
 <!-- FEATURES STRIP -->
-<div
-  style="background:var(--surface2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:0 80px;display:flex;overflow-x:auto;transition:background 0.35s;">
-  <div
-    style="display:flex;align-items:center;gap:8px;padding:15px 28px;font-size:0.82rem;color:var(--text-mid);border-right:1px solid var(--border);white-space:nowrap;">
+<div class="border-y px-4 md:px-20 flex flex-wrap justify-center transition-colors duration-300"
+  style="background:var(--surface2);border-color:var(--border);">
+  <div class="flex items-center gap-2 px-3 py-3 md:px-5 md:py-4 text-[0.82rem] whitespace-nowrap border-r md:border-r"
+    style="color:var(--text-mid);border-color:var(--border);">
     🧬 AI Skin Analysis</div>
-  <div
-    style="display:flex;align-items:center;gap:8px;padding:15px 28px;font-size:0.82rem;color:var(--text-mid);border-right:1px solid var(--border);white-space:nowrap;">
+  <div class="flex items-center gap-2 px-3 py-3 md:px-5 md:py-4 text-[0.82rem] whitespace-nowrap border-r md:border-r"
+    style="color:var(--text-mid);border-color:var(--border);">
     📸 Ingredient Scanner</div>
-  <div
-    style="display:flex;align-items:center;gap:8px;padding:15px 28px;font-size:0.82rem;color:var(--text-mid);border-right:1px solid var(--border);white-space:nowrap;">
+  <div class="flex items-center gap-2 px-3 py-3 md:px-5 md:py-4 text-[0.82rem] whitespace-nowrap border-r md:border-r"
+    style="color:var(--text-mid);border-color:var(--border);">
     🔥 Trend Verification</div>
-  <div
-    style="display:flex;align-items:center;gap:8px;padding:15px 28px;font-size:0.82rem;color:var(--text-mid);border-right:1px solid var(--border);white-space:nowrap;">
+  <div class="flex items-center gap-2 px-3 py-3 md:px-5 md:py-4 text-[0.82rem] whitespace-nowrap border-r md:border-r"
+    style="color:var(--text-mid);border-color:var(--border);">
     🌿 Natural Remedies</div>
-  <div
-    style="display:flex;align-items:center;gap:8px;padding:15px 28px;font-size:0.82rem;color:var(--text-mid);white-space:nowrap;">
+  <div class="flex items-center gap-2 px-3 py-3 md:px-5 md:py-4 text-[0.82rem] whitespace-nowrap"
+    style="color:var(--text-mid);">
     👩‍⚕️ Dermatologist Connect</div>
 </div>
 
 <!-- ABOUT / FEATURES SECTION -->
-<section style="padding:100px 80px;background:var(--bg);transition:background 0.35s;">
-  <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;">
+<section class="py-16 px-6 md:py-24 md:px-20 transition-colors duration-300" style="background:var(--bg);">
+  <div class="max-w-[1100px] mx-auto flex flex-col lg:grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
     <!-- Left: About text -->
     <div>
-      <div class="section-label" style="text-align:left;">Why SkinSense</div>
-      <h2
-        style="font-family:'Playfair Display',serif;font-size:clamp(1.9rem,2.8vw,2.6rem);color:var(--text);line-height:1.15;margin-bottom:18px;">
-        Smart skincare,<br><em style="font-style:italic;color:var(--mauve);">built for you.</em>
+      <div class="section-label text-left mb-4">Why SkinSense</div>
+      <h2 class="font-['Playfair_Display'] text-[clamp(1.9rem,2.8vw,2.6rem)] leading-[1.15] mb-4"
+        style="color:var(--text);">
+        Smart skincare,<br><em class="italic" style="color:var(--mauve);">built for you.</em>
       </h2>
-      <p style="font-size:0.95rem;color:var(--text-mid);line-height:1.8;font-weight:300;margin-bottom:16px;">
+      <p class="text-[0.95rem] leading-[1.8] font-light mb-4" style="color:var(--text-mid);">
         SkinSense helps identify your skin type, detect common skin concerns, and recommend personalised routines —
         bridging the gap between you and professional dermatological care.
       </p>
-      <p style="font-size:0.92rem;color:var(--text-mid);line-height:1.8;font-weight:300;margin-bottom:32px;">
+      <p class="text-[0.92rem] leading-[1.8] font-light mb-8" style="color:var(--text-mid);">
         Our algorithms are trained on thousands of skin images to provide accurate, reliable, and actionable insights
         for your unique skincare journey.
       </p>
-      <a href="{{ url_for('auth.register') }}" class="btn-primary" style="text-decoration:none;display:inline-block;">
+      <a href="{{ url_for('auth.register') }}" class="btn-primary inline-block no-underline text-center w-full sm:w-auto mt-4">
         Create Free Account
       </a>
     </div>
 
     <!-- Right: Feature points -->
-    <div style="display:flex;flex-direction:column;gap:14px;">
+    <div class="flex flex-col gap-4">
       {% for feature in [
       ('🧬', 'AI-based skin condition detection', 'Upload a photo for instant, ML-powered skin analysis.'),
       ('📸', 'Ingredient safety scanner', 'Check if a product label is safe for your skin type.'),
@@ -138,16 +135,14 @@
       ('⚡', 'Real-time analysis', 'Results in seconds, not days. No waiting room needed.'),
       ('🔒', 'Privacy-first platform', 'Your data is encrypted and never sold to third parties.')
       ] %}
-      <div
-        style="display:flex;align-items:flex-start;gap:16px;padding:18px 20px;background:var(--surface);border-radius:14px;border:1px solid var(--border);transition:transform 0.2s,box-shadow 0.2s;"
-        onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px var(--shadow-lg)'"
-        onmouseout="this.style.transform='';this.style.boxShadow=''">
-        <div
-          style="width:40px;height:40px;background:var(--pill-bg);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">
+      <div class="flex items-start gap-4 p-5 rounded-[14px] border transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_var(--shadow-lg)]"
+        style="background:var(--surface);border-color:var(--border);">
+        <div class="w-10 h-10 rounded-[10px] flex items-center justify-center text-[20px] shrink-0"
+          style="background:var(--pill-bg);">
           {{ feature[0] }}</div>
         <div>
-          <div style="font-size:0.9rem;font-weight:700;color:var(--text);margin-bottom:3px;">{{ feature[1] }}</div>
-          <div style="font-size:0.82rem;color:var(--text-mid);line-height:1.5;">{{ feature[2] }}</div>
+          <div class="text-[0.9rem] font-bold mb-1" style="color:var(--text);">{{ feature[1] }}</div>
+          <div class="text-[0.82rem] leading-[1.5]" style="color:var(--text-mid);">{{ feature[2] }}</div>
         </div>
       </div>
       {% endfor %}
@@ -157,30 +152,28 @@
 </section>
 
 <!-- CTA SECTION -->
-<section style="background:#1a1018;padding:100px 80px;text-align:center;position:relative;overflow:hidden;">
-  <div
-    style="position:absolute;top:-150px;left:50%;transform:translateX(-50%);width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(201,136,158,0.18) 0%,transparent 65%);pointer-events:none;">
+<section class="py-20 px-6 md:py-24 md:px-20 text-center relative overflow-hidden bg-[#1a1018]">
+  <div class="absolute -top-[150px] left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
+    style="background:radial-gradient(circle,rgba(201,136,158,0.18) 0%,transparent 65%);">
   </div>
-  <div style="position:relative;z-index:2;max-width:560px;margin:0 auto;">
-    <div
-      style="font-size:0.74rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--mauve);font-weight:600;margin-bottom:16px;">
+  <div class="relative z-10 max-w-[560px] mx-auto">
+    <div class="text-[0.74rem] uppercase tracking-[0.14em] font-semibold mb-4" style="color:var(--mauve);">
       Get Started</div>
-    <h2
-      style="font-family:'Playfair Display',serif;font-size:clamp(2rem,3.5vw,3rem);color:#f5e8ed;line-height:1.15;margin-bottom:18px;">
-      Ready to know<br><em style="font-style:italic;color:var(--rose);">your skin better?</em>
+    <h2 class="font-['Playfair_Display'] text-[clamp(2rem,3.5vw,3rem)] text-[#f5e8ed] leading-[1.15] mb-4">
+      Ready to know<br><em class="italic" style="color:var(--rose);">your skin better?</em>
     </h2>
-    <p style="font-size:0.95rem;color:rgba(245,232,237,0.5);line-height:1.7;margin-bottom:36px;font-weight:300;">
+    <p class="text-[0.95rem] text-[rgba(245,232,237,0.5)] leading-[1.7] mb-9 font-light">
       Join thousands of users taking control of their skin health with AI-powered tools, expert guidance, and
       science-backed recommendations.
     </p>
-    <div style="display:flex;gap:14px;justify-content:center;align-items:center;">
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
       <a href="{{ url_for('auth.register') }}"
-        style="background:linear-gradient(135deg,var(--rose),var(--mauve));color:#fff;border:none;padding:14px 32px;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer;text-decoration:none;transition:all 0.22s;box-shadow:0 6px 20px rgba(201,136,158,0.35);">
+        class="text-white border-none py-[14px] px-8 rounded-full font-['DM_Sans'] text-[0.95rem] font-semibold cursor-pointer no-underline transition-all duration-200 shadow-[0_6px_20px_rgba(201,136,158,0.35)] w-full sm:w-auto"
+        style="background:linear-gradient(135deg,var(--rose),var(--mauve));">
         Create Free Account
       </a>
       <a href="{{ url_for('auth.login') }}"
-        style="color:rgba(245,232,237,0.5);font-size:0.88rem;text-decoration:none;transition:color 0.2s;"
-        onmouseover="this.style.color='#f0a5b0'" onmouseout="this.style.color='rgba(245,232,237,0.5)'">
+        class="text-[rgba(245,232,237,0.5)] text-[0.88rem] no-underline transition-colors duration-200 hover:text-[#f0a5b0] w-full sm:w-auto mt-2 sm:mt-0">
         Already a member? Login →
       </a>
     </div>
