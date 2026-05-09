@@ -2557,16 +2557,713 @@ body.auth-page {
     display: none !important;
 }
 
-@media(max-width:640px) {
-    .concerns-grid {
-        grid-template-columns: 1fr 1fr
+/* ==========================================================
+   RESPONSIVE DESIGN — Mobile-first breakpoints
+   Targets: iPhone SE (375), iPhone 14 (390), Galaxy (360-412),
+            Tablet/iPad (768-1024), Laptop (1024-1440), Desktop (1440+)
+   ========================================================== */
+
+/* ── Extra-small: up to 480px (phones in portrait) ── */
+@media (max-width: 480px) {
+    /* Navbar */
+    .navbar {
+        padding: 12px 16px;
     }
 
-    .skin-type-grid {
-        grid-template-columns: 1fr
+    .brand-logo {
+        font-size: 1rem;
+    }
+
+    .logo-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+
+    .nav-right {
+        gap: 8px;
+    }
+
+    .theme-toggle-wrap {
+        width: 48px;
+        height: 26px;
+    }
+
+    .avatar-circle {
+        width: 30px;
+        height: 30px;
+        font-size: 0.72rem;
+    }
+
+    .btn-login {
+        padding: 7px 16px;
+        font-size: 0.8rem;
+    }
+
+    /* Hero section */
+    .hero-section {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        padding-top: 0;
+    }
+
+    .hero-left {
+        padding: 32px 20px;
+    }
+
+    .hero-title {
+        font-size: clamp(1.8rem, 7vw, 2.4rem);
+    }
+
+    .hero-subtitle {
+        font-size: 0.9rem;
+        max-width: 100%;
+    }
+
+    .hero-right {
+        display: none;
+    }
+
+    .hero-cta {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .hero-badge {
+        font-size: 0.68rem;
+        padding: 5px 12px;
+    }
+
+    .stat-row {
+        gap: 20px;
+        margin-top: 32px;
+        flex-wrap: wrap;
+    }
+
+    .stat-num {
+        font-size: 1.3rem;
+    }
+
+    .stat-label {
+        font-size: 0.68rem;
+    }
+
+    /* Quick bar */
+    .quick-bar {
+        padding: 0 12px;
+    }
+
+    .quick-item {
+        padding: 12px 16px;
+        font-size: 0.76rem;
+    }
+
+    /* Cards section */
+    .cards-section {
+        padding: 48px 16px;
+    }
+
+    .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .section-title {
+        font-size: clamp(1.4rem, 5vw, 1.8rem);
+        margin-bottom: 32px;
+    }
+
+    .dash-card {
+        padding: 24px 20px;
+        border-radius: 18px;
+    }
+
+    /* Routine section */
+    .routine-section {
+        padding: 48px 16px;
+    }
+
+    .routine-inner {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .routine-title {
+        font-size: clamp(1.5rem, 5vw, 1.9rem);
+    }
+
+    /* Footer */
+    .footer {
+        grid-template-columns: 1fr;
+        padding: 32px 16px;
+        gap: 28px;
+    }
+
+    .footer-bottom {
+        padding: 14px 16px;
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+
+    /* Auth pages */
+    .auth-card {
+        width: 100%;
+        max-width: 100%;
+        padding: 32px 20px;
+        border-radius: 18px;
+        margin: 0 12px;
+    }
+
+    .auth-card h2 {
+        font-size: 1.4rem;
+    }
+
+    /* Module pages */
+    .module-page {
+        padding: 32px 12px;
+    }
+
+    .module-card {
+        padding: 28px 20px;
+        border-radius: 18px;
+    }
+
+    .module-card h2 {
+        font-size: 1.3rem;
+    }
+
+    /* Ingredient scanner split layout */
+    .is-split {
+        flex-direction: column;
+        border-radius: 18px;
+    }
+
+    .is-form-panel {
+        padding: 28px 20px;
+    }
+
+    .is-form-panel h2 {
+        font-size: 1.3rem;
+    }
+
+    .is-visual-panel {
+        display: none;
+    }
+
+    /* Trend verification */
+    .tv-card {
+        padding: 28px 20px;
+        border-radius: 18px;
+    }
+
+    .tv-card h2 {
+        font-size: 1.3rem;
+    }
+
+    /* Natural remedies */
+    .nr-page {
+        padding: 24px 12px;
+    }
+
+    .nr-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .nr-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .nr-search {
+        max-width: 100%;
+    }
+
+    /* Dermatologists */
+    .derma-page {
+        padding: 32px 12px;
+    }
+
+    .derma-page h1 {
+        font-size: 1.5rem;
+    }
+
+    .derma-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    /* History */
+    .hist-page {
+        padding: 16px 10px;
+    }
+
+    .hist-container {
+        padding: 20px 14px;
+        border-radius: 14px;
+    }
+
+    .hist-title {
+        font-size: 1.3rem;
+    }
+
+    .hist-tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        gap: 0;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .hist-tab-btn {
+        padding: 8px 10px;
+        font-size: 0.75rem;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .hist-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .hist-table th,
+    .hist-table td {
+        padding: 10px 12px;
+        font-size: 0.75rem;
+        white-space: nowrap;
+    }
+
+    /* Skin analysis */
+    .sa-page {
+        padding: 24px 12px 48px;
+    }
+
+    .step-indicator {
+        margin-bottom: 24px;
     }
 
     .step-connector {
-        width: 30px
+        width: 20px;
+    }
+
+    .step-label {
+        font-size: 0.68rem;
+    }
+
+    .step-num {
+        width: 26px;
+        height: 26px;
+        font-size: 0.72rem;
+    }
+
+    .sa-section-title {
+        font-size: 1.3rem;
+    }
+
+    .upload-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .upload-card {
+        width: 100%;
+        max-width: 280px;
+        height: 140px;
+    }
+
+    .skin-type-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .concerns-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .sa-nav {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .sa-btn-back,
+    .sa-btn-next {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .sa-hero h1 {
+        font-size: 1.5rem;
+    }
+
+    /* Skin report inline-style overrides */
+    .report-page {
+        padding: 20px 12px 48px;
+    }
+
+    .rpt-card {
+        padding: 20px 16px !important;
+        border-radius: 16px;
+    }
+
+    .rpt-card-title {
+        font-size: 15px;
+    }
+
+    .ai-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .two-col {
+        grid-template-columns: 1fr;
+    }
+
+    .ing-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-stats-grid-2x2 {
+        grid-template-columns: 1fr !important;
+    }
+
+    .report-actions {
+        flex-direction: column;
+    }
+
+    .report-actions > div {
+        display: flex !important;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-dash,
+    .btn-pdf {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .step-connector-done {
+        width: 24px;
+    }
+
+    .step-num-done {
+        width: 26px;
+        height: 26px;
+        font-size: 11px;
+    }
+
+    .step-label-text {
+        font-size: 11px;
+    }
+
+    .btn-login {
+        display: none !important;
+    }
+}
+
+/* ── Small: 481px–768px (large phones landscape, small tablets) ── */
+@media (min-width: 481px) and (max-width: 768px) {
+    .navbar {
+        padding: 14px 24px;
+    }
+
+    .hero-section {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+
+    .hero-left {
+        padding: 48px 32px;
+    }
+
+    .hero-right {
+        display: none;
+    }
+
+    .hero-title {
+        font-size: clamp(2rem, 5vw, 2.8rem);
+    }
+
+    .quick-bar {
+        padding: 0 24px;
+    }
+
+    .cards-section {
+        padding: 64px 24px;
+    }
+
+    .cards-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+
+    .routine-section {
+        padding: 64px 24px;
+    }
+
+    .routine-inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .footer {
+        grid-template-columns: 1fr 1fr;
+        padding: 40px 24px;
+    }
+
+    .footer-bottom {
+        padding: 16px 24px;
+    }
+
+    .auth-card {
+        width: 100%;
+        max-width: 420px;
+        padding: 40px 32px;
+    }
+
+    .derma-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .nr-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .hist-container {
+        padding: 28px 24px;
+    }
+
+    .concerns-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .ai-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .report-page {
+        padding: 28px 20px 60px;
+    }
+
+    .sa-page {
+        padding: 32px 20px 60px;
+    }
+
+    .btn-login {
+        display: none !important;
+    }
+}
+
+/* ── Medium: 769px–1024px (tablets, iPad) ── */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .navbar {
+        padding: 14px 32px;
+    }
+
+    .hero-section {
+        grid-template-columns: 1fr 0.8fr;
+    }
+
+    .hero-left {
+        padding: 56px 32px 56px 40px;
+    }
+
+    .hero-title {
+        font-size: clamp(2rem, 4vw, 3rem);
+    }
+
+    .quick-bar {
+        padding: 0 32px;
+    }
+
+    .cards-section {
+        padding: 72px 32px;
+    }
+
+    .cards-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .routine-section {
+        padding: 72px 32px;
+    }
+
+    .routine-inner {
+        gap: 40px;
+    }
+
+    .footer {
+        padding: 40px 32px;
+    }
+
+    .footer-bottom {
+        padding: 16px 32px;
+    }
+
+    .derma-page {
+        padding: 48px 32px;
+    }
+
+    .nr-page {
+        padding: 48px 32px;
+    }
+
+    .hist-page {
+        padding: 32px 24px;
+    }
+}
+
+/* ── Large: 1025px–1440px (laptops) ── */
+@media (min-width: 1025px) and (max-width: 1440px) {
+    .navbar {
+        padding: 16px 48px;
+    }
+
+    .hero-left {
+        padding: 64px 40px 64px 56px;
+    }
+
+    .cards-section {
+        padding: 80px 48px;
+    }
+
+    .routine-section {
+        padding: 80px 48px;
+    }
+
+    .footer {
+        padding: 48px 48px;
+    }
+
+    .footer-bottom {
+        padding: 16px 48px;
+    }
+}
+
+/* ── Index page hero inline-style responsive overrides ── */
+@media (max-width: 768px) {
+    /* Index hero — collapse two-column to single column */
+    section[style*="grid-template-columns:1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Index hero left padding */
+    div[style*="padding:80px 48px 80px 80px"] {
+        padding: 32px 20px !important;
+    }
+
+    /* Index hero right — hide image collage on mobile */
+    div[style*="padding:40px 40px 40px 0;display:flex"] {
+        display: none !important;
+    }
+
+    /* Index features section padding */
+    section[style*="padding:100px 80px"] {
+        padding: 48px 20px !important;
+    }
+
+    /* Index features inner grid */
+    div[style*="grid-template-columns:1fr 1fr;gap:80px"] {
+        grid-template-columns: 1fr !important;
+        gap: 32px !important;
+    }
+
+    /* Index CTA section padding */
+    section[style*="padding:100px 80px;text-align:center"] {
+        padding: 48px 20px !important;
+    }
+
+    /* Index features strip */
+    div[style*="padding:0 80px;display:flex;overflow-x:auto"] {
+        padding: 0 12px !important;
+    }
+
+    /* Dashboard hero right panel */
+    .hero-right[style*="padding:40px"] {
+        padding: 20px !important;
+    }
+
+    /* Stat row in inline styles */
+    div[style*="display:flex;gap:36px;margin-top:52px"] {
+        gap: 20px !important;
+        flex-wrap: wrap !important;
+        margin-top: 28px !important;
+    }
+
+    /* CTA inline flex buttons */
+    div[style*="display:flex;gap:14px;justify-content:center"] {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 12px !important;
+    }
+}
+
+/* ── Tablet range inline-style overrides ── */
+@media (min-width: 769px) and (max-width: 1024px) {
+    div[style*="padding:80px 48px 80px 80px"] {
+        padding: 48px 32px !important;
+    }
+
+    div[style*="padding:40px 40px 40px 0"] {
+        padding: 24px 24px 24px 0 !important;
+    }
+
+    section[style*="padding:100px 80px"] {
+        padding: 64px 32px !important;
+    }
+
+    div[style*="padding:0 80px;display:flex;overflow-x:auto"] {
+        padding: 0 24px !important;
+    }
+}
+
+/* ── Dashboard hero floating cards — responsive sizes ── */
+@media (max-width: 1100px) {
+    .hero-right div[style*="width:420px"] {
+        width: 100% !important;
+        max-width: 340px !important;
+    }
+
+    .hero-right div[style*="width:300px"] {
+        width: 240px !important;
+    }
+
+    .hero-right div[style*="width:185px"] {
+        width: 150px !important;
+        padding: 12px 14px !important;
+    }
+
+    .hero-right div[style*="width:180px"] {
+        width: 150px !important;
+        padding: 12px 14px !important;
+    }
+}
+
+/* ── Utility: Prevent horizontal scroll globally ── */
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+/* ── Utility: All images responsive ── */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* ── Mobile nav enhancements ── */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none !important;
+    }
+
+    .hamburger {
+        display: flex !important;
+    }
+
+    .mobile-nav-drawer {
+        top: 56px;
     }
 }
